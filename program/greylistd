@@ -782,6 +782,10 @@ try:
             client.close()
             sockets.remove(client)
 
+
+except SystemExit:
+    pass
+
 except KeyboardInterrupt:
     cleanup()
 

@@ -1,3 +1,13 @@
+greylistd (0.8.3) unstable; urgency=low
+
+  * Changed value of "false" from -1 to 1 in 'config' DebConf module.
+    per report from Laurent Fousse <laurent@komite.net>.  This is required
+    for POSIX compliance, and "ash"/"dash".  Closes: #296266.
+  * Added 'except SystemExit' statement in main loop to avoid a
+    "Fatal Event" message on exit.  Closes: #295898.
+
+ -- Tor Slettnes <tor@slett.net>  Mon, 14 Mar 2005 14:54:44 -0800
+
 greylistd (0.8.2) unstable; urgency=low
 
   * Added French translation by Jean-Luc Coulon.  Closes: #292881.

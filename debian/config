@@ -9,7 +9,7 @@ action="$1"
 priorversion="$2"
 
 true=0
-false=-1
+false=1
 
 running_exim4()
 {
