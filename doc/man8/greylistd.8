@@ -1,0 +1,202 @@
+.\" Simple greylisting system for mail transport agents
+.TH "greylistd" "8" "0.8" "Tor Slettnes" "Mail Administration"
+.SH "NAME"
+greylistd \- simple greylisting system for mail transport agents
+.SH "SYNOPSIS"
+.B greylistd
+.SH "DESCRIPTION"
+.SS "Greylisting"
+This daemon provides a simple greylisting implementation for use with
+Exim and other mail transport agents (MTAs).  For a more elaborate
+introduction to greylisting, please refer to Evan Harris' whitepaper 
+at:
+	http://projects.puremagic.com/greylisting/
+
+Greylisting is a simple but highly effective means to weed out
+messages that are being delivered via spamware/ratware tools.  The
+idea is to establish whether a prior relationship exists between the
+sender and the receiver of a message.  Most of the time it does, and
+the delivery proceeds normally.
+
+On the other hand, if no prior relationship exists, the delivery is
+temporarily rejected, using a 451 SMTP response.  Legitimate MTAs will
+treat this response accordingly, and retry the delivery in a while.
+In contrast, ratware will usually fail to retry the delivery in a
+normal fashion.
+
+As a result, greylisting is currently more than 90% effective in
+blocking incoming junk mail, while nearly all legitimate mail goes
+through.
+
+Three pieces of information (herafter called a \fItriplet\fP) from the
+delivery attempt are cached for future reference:
+
+  - The address of the host attempting the delivery
+  - The envelope sender address (MAIL FROM:)
+  - The envelope recipient address (RCPT TO:)
+
+If a delivery attempt was temporarily rejected, then after an initial
+timeout (60 minutes by default), but before a retry expiration time (8
+hours by default), new delivery attempts with the same \fItriplet\fP
+are accepted, and the \fItriplet\fP is added to a whitelist.  This
+allows for delivery retries, presumably from legitimate MTAs, and
+ensures that future mail from the same contact is not subject to
+greylisting.
+
+If a whitelisted \fItriplet\fP has not been seen for an extended
+duration (by default 60 days), it is expired.  This prevents unlimited
+growth of the list.
+
+The downside to greylisting is that legitimate mail from people who
+have never sent you mail in the past (or, at least, within the last 60
+days) are subject to a one-hour delay.
+
+The upside is that the current generation of ratware tools will not be
+able to deliver spam or virii to you.  Even if, as a result of lots of
+sites incorporating the greylisting concept, ratware tools are
+modified such that temporarily rejected deliveries are retried, you
+stand an increased chance of blocking such mail.  That is because
+within the mandatory 1-hour initial delay, chances are that the
+sending host's IP address has been listed in one or more DNS block
+lists (such as bl.spamcop.net, cbl.abuseat.org, etc..), and can be
+rejected by your MTA by consulting these lists directly, or via
+anti-spam software like SpamAssassin.
+.SS "greylistd"
+\fBgreylistd\fP is meant to be installed on a server that accepts
+incoming mail.  The MTA on this server connects to the greylistd
+daemon over a UNIX domain socket (by default
+\fI/var/run/greylistd/socket\fP), or alternatively via the command
+\fBgreylist\fP(1), and submits a string (\fItriplet\fP) that
+identifies a particular host/sender/recipient relationship.
+\fBgreylistd\fP responds "white", "grey" or "black", depending on the
+current listing status of the provided \fItriplet\fP.  Alternatively,
+if either of the "--white", "--grey", or "--black" options precede the
+data, \fBgreylistd\fP responds "true" or "false", indicating whether
+the triplet is currently in the corresponding state.
+.SH "EXAMPLES"
+.SS "Exim 4"
+A sample greylistd statement for Exim 4 is provided with this package,
+and can normally be found in
+"/usr/share/doc/greylistd/examples/exim4-acl-example.txt".
+
+.SS "Others"
+What others?  :-)
+
+A prerequisite to greylisting in general is the ability to perform
+custom filtering throughout the various stages in the SMTP
+transaction, most notably after the \fBRCPT TO:\fP SMTP command.  In
+particular, \fBgreylistd\fP(8) can be invoked either over a UNIX
+domain socket or via the supplied \fBgreylist\fP(1) utility.
+
+Although \fBgreylistd\fP(8) is written mainly with Exim in mind, it
+should be possible to use it with any MTA that:
+.IP "  -"
+Allows arbitrary strings to be passed on via a UNIX domain socket
+(\fB/var/run/greylistd/socket\fP) or supplied to external programs
+(\fBgreylist\fP(1)).
+.IP "  -"
+Can defer the incoming delivery, based on the response.
+.PP
+Some MTAs either have limited or no support for such external filters
+in the SMTP transaction (e.g. Sendmail), or define a very custom
+interface for such filters (e.g. Postifx "Policy Servers").
+
+That said, solutions exist for these other MTAs as well.  For Postfix,
+check into "postgrey", and for Sendmail there is "relaydelay".  For
+other MTAs, check the links on Evan Harris' greylisting project page:
+
+    http://projects.puremagic.com/greylisting/links.html
+
+.SH "FILES"
+.SS "/etc/greylistd/config"
+Configuration settings.  Currently, this file consists of three
+sections:
+.IP "[timeout]" 4
+Lists various timeouts used to determine how long to keep a new
+\fItriplet\fP greylisted, and when to expire previosly known
+\fItriplet\fPs.
+.IP "[socket]" 4
+Specifies path and permissions of the UNIX domain socket on which
+\fBgreylistd\fP will listen.
+.IP "[data]" 4
+Specifies the paths to the data files, containing the data items and
+statistics, as well as an \fIupdate interval\fP specifying how often
+data will be written to these files.
+.SS "/var/lib/greylistd/states"
+(default path, can be modified in the configuration file)
+
+Runtime data.  Theare are four sections:
+.BR "[white]" ", " "[grey]" ", " "[black]" " and " "[statistics]" ". "
+The first three sections consist of lines of the form:
+
+    \fIhash\fP = \fIlastseen firstseen count\fP
+
+where:
+.IP "  -" 4
+\fIhash\fP is a 32-bit value representing a given \fItriplet\fP,
+.IP "  -" 4
+\fIlastseen\fP is a 32-bit value representing the timestamp of last
+delivery attempt for this triplet,
+.IP "  -" 4
+\fIfirstseen\fP is a 32-bit value representing the timestamp of first
+known delivery attempt for this triplet,
+.IP "  -" 4
+\fIcount\fP is a 32-bit value representing the number of delivery
+attempts that have been made for this triplet in this time period.
+.PP
+The \fB[statistics]\fP section contains a counter for each of the
+three lists, indicating how many items that has ever made its way into
+these lists by way of the \fBupdate\fP protocol.
+.SS "/var/lib/greylistd/triplets"
+(default path, can be modified in the configuration file)
+
+Unhashed data - i.e. the original triplets passed to greylistd.
+Internally, \fBgreylistd\fP(8) hashes the provided data into a single
+32-bit value for efficiency.  Prior to version 0.6, the original data
+was not retained; as of version 0.6, data is optionally saved into
+this file.
+
+Data items are saved in the form:
+    \fIhash\fP = \fIdata\fP ...
+.SS "/var/run/greylistd/socket"
+(default path, can be modified in the configuration file)
+
+The UNIX domain socket providing the main interface to "greylistd".
+The MTA can either connect to this socket directly, or use the
+supplied "greylist" utility to do so.
+.SH "BUGS"
+Because \fItriplet\fPs and timestamps are hashed into simple 32-bit
+values, there is a very slim chance that deliveries that should have
+been greylisted are allowed through.  More so for very busy sites.
+
+Commands are actually executed in the daemon, not the "greylist"
+client.  If the user who invokes "greylist" interactively has a
+different time zone than the daemon process, time and date
+representations in the output will reflect those of the daemon. 
+.SH "AUTHOR"
+This python script and manual page is written by Tor Slettnes,
+originally for Debian GNU/Linux.
+.SH "COPYRIGHT"
+Copyright \(co 2004-2005 Tor Slettnes.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+On a Debian GNU/Linux system, the full text of the GPL is available in
+/usr/share/common-licenses/GPL.  It is also available at:
+
+    http://www.gnu.org/licenses/gpl.html
+.SH "SEE ALSO"
+.IP "http://projects.puremagic.com/greylisting/"
+Evan Harris' greylisting whitepaper
+.IP "\fBgreylist\fP(1)"
+Command-line interface to the greylist daemon.
+.IP "\fBgreylistd-setup-exim4\fP(8)"
+Utility to add/remove support for greylistd in Exim 4 configuration files.

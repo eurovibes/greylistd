@@ -1,0 +1,55 @@
+Template: greylistd/restartexim
+Type: boolean
+Default: true
+_Description: Restart Exim after adding it to the greylist group?
+ You are using Exim 4 as your Mail Transport Agent (MTA).  Great!
+ .
+ The "Debian-exim" user will be added to the "greylist" group, so that the
+ Exim daemon process can talk to greylistd.  However, for this change to
+ take effect, the process must also be restarted.
+
+Template: greylistd/autoconfig_notdone_exim4
+Type: note
+_Description: Exim 4 needs additional configuration
+ For greylisting to become effective, your Mail Transport Agent (MTA) needs
+ to talk to greylistd while receiving incoming mail; and depending on the
+ response, issue a temporary rejection (451 SMTP code) to the remote host.
+ .
+ Since you are using Exim 4 as your MTA, a script is available for you to
+ perform this task.  At a root prompt, type:
+  # greylistd-setup-exim4 add
+ If you overwrite your Exim configuration files in the future (for
+ instance, when upgrading Exim), you may need to re-run this command.
+ .
+ Later, before you uninstall "greylistd", you want to run:
+  # greylistd-setup-exim4 remove
+ .
+ For more options and help on usage, run the command without any arguments,
+ or see the "greylistd-setup-exim4(8)" manual page.  One suggested option
+ for the "add" command is "-netmask=24".
+ .
+ The reason this operation is not performed automatically is that Exim's
+ configuration files are tagged as "conffiles", so per Debian Policy they
+ are completely under your control.  Only you can change them.
+ .
+ If you prefer to configure Exim 4 for greylistd by hand, please see
+ /usr/share/doc/greylistd/README.Debian.
+
+Template: greylistd/autoconfig_notdone
+Type: note
+_Description: Your MTA needs additional configuration
+ For greylisting to become effective, two things must happen:
+  - Your Mail Transport Agent (MTA) needs to talk to greylistd while
+    receiving incoming mail, and depending on the response, issue a
+    temporary rejection (451 SMTP response) to the remote host.
+  - The account under which your MTA runs needs to be added to the
+    "greylist" group.  After this, your MTA needs to be restarted.
+ .
+ Unfortunately, this package supports only Debian's default Exim 4
+ configuration.  Since you seem to be using a different MTA, have a look at
+ the greylistd(8) manual page for some information on communicating with
+ greylistd.
+ .
+ There may also be other greylisting solutions available that suit your MTA
+ better; see the "Links" section at:
+    http://projects.puremagic.com/greylisting/

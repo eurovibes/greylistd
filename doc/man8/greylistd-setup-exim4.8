@@ -1,0 +1,107 @@
+.\" Utility for to add/remove greylistd support to Exim 4 configuration
+.TH "greylistd-setup-exim4" "8" "0.8" "Tor Slettnes" "Mail Administration"
+.SH "NAME"
+greylistd-setup-exim4 \- add/remove support for greylistd in Exim 4
+.SH "SYNOPSIS"
+.BR greylistd-setup-exim4 " {" add "|" remove "|" test "}"
+.RI "[" "file acl_name" "] [" "-option" " ...]"
+.SH "DESCRIPTION"
+This utility configures, deconfigures, or tests for greylistd support
+in the given Exim 4 configuration file and Access Control List (ACL).
+
+If no file or ACL name is supplied, changes are made to the default
+configuration files and ACLs for your distribution.
+.SH "USAGE"
+The following commands are available:
+.IP "\fBadd\fP"
+Adds greylistd statement(s).
+.IP "\fBremove\fP"
+Removes existing greylistd statement(s).
+.IP "\fBtest\fP"
+Tests for the presence of greylistd statement(s), without making any
+changes.  A zero exit status indicates that the statement(s) exist(s).
+.PP
+The following options are available:
+.IP "\fB-quiet\fP"
+Normally, the result of the operation is printed on standard error;
+this option inhibits output.
+.IP "\fB-no-fail\fP"
+Always exit with a zero status, even on failure. If this option is
+given, only the result of successful operations are printed.
+.IP "\fB-no-reload\fP"
+Normally, if any changes were made to the Exim 4 configuration files,
+\fBgreylistd-setup-exim4\fP invokes the Exim 4 init script,
+telling Exim to reload its configuration files.  This option inhibits
+this behavior.
+.IP "\fB-netmask=\fP\fIsize\fP"
+In the statement that is inserted in the Exim 4 configuration file,
+the remote host address is one of the items that is passed on to
+greylistd.  This option causes the host address to be filtered through
+a netmask of the given size first.  Useful values are between 16 and
+31 for IPv4.
+.IP "\fB-acltype=\fP{\fBrcpt\fP|\fBdata\fP}"
+Used in conjunction with the \fBadd\fP command to insert a statement
+suitable for use in an ACL used to validate the SMTP \fBRCPT TO:\fP
+command or the message \fBDATA\fP, respectively.  This is implicit
+when the supplied ACL name contains either of the substrings
+"\fBrcpt\fP" or "\fBdata\fP" (such as Debian's default
+"\fBacl_check_rcpt\fP" and "\fBacl_check_data\fP" ACLs).  Otherwise,
+this option has to be present for the \fBadd\fP command.
+.PP
+.SH "EXAMPLES"
+.IP "\fBgreylistd-setup-exim4 add -netmask=24\fP"
+Adds greylistd statements to any \fBacl_check_rcpt\fP and
+\fBacl_check_data\fP ACLs found in any of the following files:
+
+  - /etc/exim4/exim4.conf.template
+  - /etc/exim4/conf.d/acl/30_exim4-config_check_rcpt
+  - /etc/exim4/conf.d/acl/40_exim4-config_check_data
+
+In these statements, the data passed to greylistd includes the host
+address filtered through a 24-bit netmask, rather than the host's
+unique IP address.  This allows for pools of several Mail Sending
+Agents (MSAs) within a given network to be treated as a single host.
+
+If successful, Exim 4 is told to reload its configuration files.
+If a statement already exists, nothing happens - but the program
+exits unsuccessfully (non-zero return code).
+.IP "\fBgreylistd-setup-exim4 remove -quiet\fP"
+Remove greylisting support from the above configuration files and ACLs.
+If greylistd statements exist in these files and ACLs, they are removed,
+and Exim 4 will reload its configuration files.  The exit code
+indicates whether the statements were present and are now successfully
+removed; but no results are printed.
+.IP "\fBgreylistd-setup-exim4 add /etc/exim4/exim4.conf.template acl_check_rcpt -no-reload\fP" 
+If no greylistd statements already exists in the \fBacl_check_rcpt\fP
+ACL in the file \fB/etc/exim4/exim4.conf.template\fP, one is
+inserted.  In this case, the Exim 4 daemon is then NOT told to reload
+its configuration files.
+.SH "BUGS"
+The statement that is inserted by this utility presumes that the Exim
+4 configuration comes from Debian's "\fBexim4-config\fP" package.
+Specifically, it makes use of the \fB+relay_from_hosts\fP host list,
+the \fB+local_domains\fP and \fB+relay_to_domains\fP domain lists, and
+the \fBacl_whitelist_local_deny\fP ACL.  A more generalized approach
+is on my, ahem, to-do list.
+.SH "AUTHOR"
+This python script and manual page is written by Tor Slettnes,
+originally for Debian GNU/Linux.
+.SH "COPYRIGHT"
+Copyright \(co 2004-2005 Tor Slettnes.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+On a Debian GNU/Linux system, the full text of the GPL is available in
+/usr/share/common-licenses/GPL.  It is also available at:
+
+    http://www.gnu.org/licenses/gpl.html
+.SH "SEE ALSO"
+.BR greylist "(1), " greylistd "(8), " /usr/share/doc/exim4/spec.txt.gz

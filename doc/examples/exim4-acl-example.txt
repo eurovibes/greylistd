@@ -1,0 +1,97 @@
+The following snippet can be insterted early in the "acl_check_rcpt" ACL
+in a standard Debian Exim4 installation.  If you have split your Exim4
+configuration into several files inside /etc/exim4/conf.d, this should
+go into /etc/exim4/conf.d/acl/30_exim4-config_check_rcpt.
+
+Note that greylistd now comes with a utility to automatically
+add/remove greylistd support to/from a default Debian Exim 4
+installation: greylistd-setup-exim4.  Run this utility with no
+arguments for usage.
+
+---->8-------->8-------->8-------->8-------->8-------->8-------->8----
+acl_check_rcpt:
+  # greylistd(8) configuration follows.
+  # This statement has been added by running "greylistd-setup-exim4 add",
+  # and can be removed by running "greylistd-setup-exim4 remove".
+  # Any changes you make here will then be lost.
+  #
+  # Perform greylisting on incoming messages from remote hosts.
+  # We do NOT greylist messages with no envelope sender, because that
+  # would conflict with remote hosts doing callback verifications, and
+  we
+  # might not be able to send mail to such hosts for a while (until
+  the
+  # callback attempt is no longer greylisted, and then some).
+  #
+  # We also check the local whitelist to avoid greylisting mail from
+  # hosts that are expected to forward mail here (such as backup MX
+  hosts,
+  # list servers, etc).
+  #
+  # Because the recipient address has not yet been verified, we do so
+  # now and skip this statement for non-existing recipients.  This is
+  # in order to allow for a 550 (reject) response below.  If the
+  delivery
+  # happens over a remote transport (such as "smtp"), recipient
+  callout
+  # verification is performed, with the original sender intact.
+  #
+  defer
+    message        = $sender_host_address is not yet authorized to
+    deliver \
+                     mail from <$sender_address> to
+		     <$local_part@$domain>. \
+                     Please try later.
+    log_message    = greylisted.
+    !senders       = :
+    !hosts         = : +relay_from_hosts : \
+                     ${if exists {/etc/greylistd/whitelist-hosts}\
+                                 {/etc/greylistd/whitelist-hosts}{}} :
+				 \
+                     ${if exists {/var/lib/greylistd/whitelist-hosts}\
+                                 {/var/lib/greylistd/whitelist-hosts}{}}
+    !authenticated = *
+    !acl           = acl_whitelist_local_deny
+    domains        = +local_domains : +relay_to_domains
+    verify         = recipient/callout=20s,use_sender,defer_ok
+    condition      = ${readsocket{/var/run/greylistd/socket}\
+                                 {--grey \
+                                  $sender_host_address \
+                                  $sender_address \
+                                  $local_part@$domain}\
+                                 {5s}{}{false}}
+
+---->8-------->8-------->8-------->8-------->8-------->8-------->8----
+
+Note that the third, fourth and fifth argument to ${readsocket ...}
+are optional; however, if there is no fifth argument, and if
+"greylistd" is not running, then the expansion will fail.  In this
+case, Exim will always return a temporary failure (SMTP 451 response),
+and not deliver any mail.
+
+If you want to create triplets with entire /24 (formerly "class C")
+networks rather than individual IP addresses, you can replace
+"$sender_host_address" in the example above with a ${mask...}
+expansion, as follows:
+
+    condition   = ${if eq {grey}\
+                          {${readsocket{/var/run/greylistd/socket}\
+                                       {${mask:sender_host_address/24}\
+                                        $sender_address\
+                                        $local_part@$domain}\
+                                       {5s}{}{}}}\
+                    {true}{false}}
+
+
+
+You may also want a similar statement in the "acl_check_data" ACL to
+catch mail sent with no envelope sender:
+
+---->8-------->8-------->8-------->8-------->8-------->8-------->8----
+
+---->8-------->8-------->8-------->8-------->8-------->8-------->8----
+
+
+Good Luck!
+
+Tor Slettnes <tor@slett.net>

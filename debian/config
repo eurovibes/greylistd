@@ -1,0 +1,65 @@
+#!/bin/sh -e
+# Config module for greylistd.
+
+. /usr/share/debconf/confmodule                                         
+db_version 2.0
+
+owner=greylistd
+action="$1"
+priorversion="$2"
+
+true=0
+false=-1
+
+running_exim4()
+{
+    test -x /usr/sbin/exim4 -a -d /etc/exim4
+}
+
+
+ismember()
+{
+    user=$1
+    group=$2
+
+    for candidate in $(id -Gn $user 2>/dev/null)
+    do
+        [ "$candidate" = "$group" ] && return $true
+    done
+
+    return $false
+}
+
+
+
+config_restartexim()
+{
+    if running_exim4 && ! ismember Debian-exim greylist
+    then
+        db_input low "$owner/restartexim" && db_go
+    fi
+
+    return 0
+}
+
+config_autoconfig_notdone()
+{
+    if running_exim4
+    then
+	question="$owner/autoconfig_notdone_exim4"
+    else
+	question="$owner/autoconfig_notdone"
+    fi
+
+    db_input high "$question" && db_go
+    return 0
+}
+
+
+config_restartexim
+config_autoconfig_notdone
+
+#DEBHELPER#
+
+db_stop
+exit 0

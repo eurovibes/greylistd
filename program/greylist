@@ -1,0 +1,165 @@
+#!/usr/bin/python
+########################################################################
+### FILE:	greylist
+### PURPOSE:	Command line interface to "greylistd(8)"
+###
+### Copyright (C) 2004, Tor Slettnes <tor@slett.net>
+###
+### This program is free software; you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2 of the License, or
+### (at your option) any later version.
+###
+### This program is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+###
+### On Debian GNU/Linux systems, the complete text of the GNU General
+### Public License can be found in `/usr/share/common-licenses/GPL'.
+### It is also available at: http://www.gnu.org/licenses/gpl.html
+########################################################################
+
+from socket       import socket, AF_UNIX, SOCK_STREAM
+from sys          import argv, stdout, stderr, exit
+from ConfigParser import ConfigParser
+
+
+### Define values not yet availble in Python 2.1
+False, True = (0 is 1), (1 is 1)
+
+
+### Exit codes based on responses from greylistd
+exitcodes = { "error:" : -1,
+              "white"  : 0,
+              "grey"   : 1,
+              "black"  : 2,
+              "true"   : 0,
+              "false"  : 1 }
+
+
+### File paths
+conffile = "/etc/greylistd/config"
+sockfile = "/var/run/greylistd/socket"
+
+### Commands that can be given over the socket
+commands = ("add", "delete", "check", "update",
+            "stats", "list",  "clear", "save",
+            "reload")
+            
+
+
+def usage (progname, message=None):
+    if message:
+        out = stderr
+        out.write("%s: %s\n\n"%(progname, message))
+    else:
+        out = stdout
+        out.write("Command line interface to \"greylistd(8)\"\n\n")
+
+    out.write("\n".join([
+        "Usage: %s --help"%progname,
+        "       %s <action>"%progname,
+        "",
+        "Actions:",
+        "  add [--white|--grey|--black] <data> ...",
+        "    Add <data> to the specified list (\"--white\" if unspecified).",
+        "",
+        "  delete <data> ...",
+        "    Remove <data> from any list.",
+        "",
+        "  check [--white|--grey|--black] <data> ...",
+        "    Check the current status of <data>.",
+        "",
+        "  update [--white|--grey|--black] <data> ...",
+        "    Check the current status of <data>; update lists accordingly.",
+        "    This is how MTAs would normally use the command.",
+        "",
+        "  stats",
+        "    Show some general list statistics.",
+        "",
+        "  list [--white] [--grey] [--black]",
+        "    Show all data items in the specified list(s).",
+        "",
+        "  save",
+        "    Force an immediate dump of data to filesystem.",
+        "",
+        "  reload",
+        "    Save data, then reload configuration and data.",
+        "",
+        "  clear [--white|--grey|--black]",
+        "    Remove ALL data and statistics, i.e. reset greylistd(8).",
+        "    This means that ALL new requests will initially receive",
+        "    a \"grey\" response.  Use with caution!",
+        "",
+        ""]))
+
+    exit((-1, 0)[not message])
+
+
+progname = argv[0].split("/")[-1]
+
+if len(argv) < 2:
+    usage(progname, "No action specified.")
+
+
+action = argv[1].lower()
+if action in ("-h", "-help", "--help", "help"):
+    usage(progname)
+
+elif not action in commands:
+    usage(progname, "Invalid action: '%s'"%action)
+
+
+
+confParser = ConfigParser()
+confParser.read(conffile)
+try:
+    sockfile = confParser.get("socket", "path")
+except:
+    pass
+del confParser
+
+
+sock = socket(AF_UNIX, SOCK_STREAM)
+
+try:
+    sock.connect(sockfile)
+except Exception, e:
+    stderr.write("%s: %s\n"%(sockfile, e[1]))
+    exit(-1)
+
+try:
+    sock.send(" ".join(argv[1:]))
+except Exception, e:
+    stderr.write("%s: %s\n"%(sockfile, e[1]))
+    exit(-1)
+
+
+stat      = True
+firstword = None
+
+while stat:
+    stat = sock.recv(1024)
+    try:
+        stdout.write("%s"%stat)
+
+    except IOError:
+        break
+    
+    else:
+        if not firstword and stat.strip():
+            firstword = stat.split(None, 1)[0]
+
+else:
+    try:
+        stdout.write("\n")
+    except IOError:
+        pass
+
+
+if firstword:
+    exit(exitcodes.get(firstword, 0))
+else:
+    stderr.write("(No response from greylistd)\n")
+    exit(-1)

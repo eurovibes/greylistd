@@ -1,0 +1,395 @@
+#!/usr/bin/python
+########################################################################
+### FILE:	greylist-setup-exim4
+### PURPOSE:	Add a greylisting statement to Exim 4 configuration file
+########################################################################
+
+from sys       import version, stdin, stderr, argv, exit
+from os.path   import isdir, join, exists
+from os        import listdir, spawnl, P_WAIT
+from re        import compile
+
+### Ensure that we can run this program
+if version < "2.3":
+    stderr.write("This program requires Python 2.3 or newer\n")
+    exit(1)
+
+
+### What files/ACLs do we want to edit by default?
+exim4conf_default_places = (
+    ("/etc/exim4/exim4.conf.template",                   "acl_check_rcpt"),
+    ("/etc/exim4/exim4.conf.template",                   "acl_check_data"),
+    ("/etc/exim4/conf.d/acl/30_exim4-config_check_rcpt", "acl_check_rcpt"),
+    ("/etc/exim4/conf.d/acl/40_exim4-config_check_data", "acl_check_data"))
+
+
+### Words that separate blocks in the Exim 4 configuation file
+exim4conf_blocks = [
+    "begin", "accept", "defer", "deny", "discard", "drop", "require", "warn" ]
+
+### What blocks do we remove when unconfiguring greylistd?
+### Every line in the block must match at least one item in this list,
+### and every item in the list must match at least one line in the block
+exim4conf_remove_block = [ '^\s*defer',  '/var/run/greylistd/socket' ]
+
+
+### What text do we add to which ACLs?
+exim4conf_texts = {
+    "rcpt" : '''  # greylistd(8) configuration follows.
+  # This statement has been added by "greylistd-setup-exim4",
+  # and can be removed by running "greylistd-setup-exim4 remove".
+  # Any changes you make here will then be lost.
+  # 
+  # Perform greylisting on incoming messages from remote hosts.
+  # We do NOT greylist messages with no envelope sender, because that
+  # would conflict with remote hosts doing callback verifications, and we
+  # might not be able to send mail to such hosts for a while (until the
+  # callback attempt is no longer greylisted, and then some).
+  #
+  # We also check the local whitelist to avoid greylisting mail from
+  # hosts that are expected to forward mail here (such as backup MX hosts,
+  # list servers, etc).
+  #
+  # Because the recipient address has not yet been verified, we do so
+  # now and skip this statement for non-existing recipients.  This is
+  # in order to allow for a 550 (reject) response below.  If the delivery
+  # happens over a remote transport (such as "smtp"), recipient callout
+  # verification is performed, with the original sender intact.
+  #
+  defer
+    message        = $sender_host_address is not yet authorized to deliver \\
+                     mail from <$sender_address> to <$local_part@$domain>. \\
+                     Please try later.
+    log_message    = greylisted.
+    !senders       = :
+    !hosts         = : +relay_from_hosts : \\
+                     ${if exists {/etc/greylistd/whitelist-hosts}\\
+                                 {/etc/greylistd/whitelist-hosts}{}} : \\
+                     ${if exists {/var/lib/greylistd/whitelist-hosts}\\
+                                 {/var/lib/greylistd/whitelist-hosts}{}}
+    !authenticated = *
+    !acl           = acl_whitelist_local_deny
+    domains        = +local_domains : +relay_to_domains
+    verify         = recipient/callout=20s,use_sender,defer_ok
+    condition      = ${readsocket{/var/run/greylistd/socket}\\
+                                 {--grey \\
+                                  %s \\
+                                  $sender_address \\
+                                  $local_part@$domain}\\
+                                 {5s}{}{false}}
+
+''',
+
+    "data" : '''  # greylistd(8) configuration follows.
+  # This statement has been added by "greylistd-setup-exim4",
+  # and can be removed by running "greylistd-setup-exim4 remove".
+  # Any changes you make here will then be lost.
+  # 
+  # Perform greylisting on incoming messages with no envelope sender here.
+  # We did not subject these to greylisting after RCPT TO:, because that
+  # would interfere with remote hosts doing sender callout verifications.
+  #
+  # Because there is no sender address, we supply only two data items:
+  #  - The remote host address
+  #  - The recipient address (normally, bounces have only one recipient)
+  #
+  # We also check the local whitelist to avoid greylisting mail from
+  # hosts that are expected to forward mail here (such as backup MX hosts,
+  # list servers, etc).
+  #
+  defer
+    message        = $sender_host_address is not yet authorized to deliver \\
+                     mail from <$sender_address> to <$recipients>. \\
+                     Please try later.
+    log_message    = greylisted.
+    senders        = :
+    !hosts         = : +relay_from_hosts : \\
+                     ${if exists {/etc/greylistd/whitelist-hosts}\\
+                                 {/etc/greylistd/whitelist-hosts}{}} : \\
+                     ${if exists {/var/lib/greylistd/whitelist-hosts}\\
+                                 {/var/lib/greylistd/whitelist-hosts}{}}
+    !authenticated = *
+    !acl           = acl_whitelist_local_deny
+    condition      = ${readsocket{/var/run/greylistd/socket}\\
+                                 {--grey \\
+                                  %s \\
+                                  $recipients}\\
+                                  {5s}{}{false}}
+
+'''
+    }
+
+
+
+class RunException (Exception):
+    pass
+
+
+def find_block (lines, decl, rxList, commentPfx="#", blocks=exim4conf_blocks):
+    startComment = None
+    startBlock   = None
+    region       = None
+    currentDecl  = None
+    rxDecl       = compile(r"^\s*(\w+):")
+
+    rxFound      = {}
+    for rx in rxList:
+        rxFound[compile(rx)] = False
+
+
+    for index in xrange(len(lines)):
+        line  = lines[index].strip()
+
+        if not line:
+            pass
+
+        elif line.startswith(commentPfx):
+            if startComment is None:
+                startComment = index
+
+        elif rxDecl.search(line):
+            if region:
+                return region
+
+            startComment = None
+            startBlock   = None
+            currentDecl  = rxDecl.search(line).group(1)
+
+        elif currentDecl == decl:
+            if line.split()[0] in blocks:
+                if region:
+                    return region
+
+                elif startComment is not None:
+                    startBlock = startComment
+
+                else:
+                    startBlock = index
+
+                rxFound = {}.fromkeys(rxFound, False)
+
+            for rx in rxFound:
+                if rx.search(line):
+                    rxFound[rx] = True
+
+            startComment = None
+
+
+        if (startBlock is None) or not min(rxFound.values()):
+            region = None
+
+        elif startComment is None:
+            region = (startBlock, index+1)
+
+    return region
+
+
+def exim4_deconfigure (lines, aclname, options):
+    region = find_block(lines, aclname, exim4conf_remove_block)
+
+    if region:
+        del lines[region[0]:region[1]]
+        return "OK"
+    else:
+        raise RunException, "Not Configured"
+
+
+def exim4_configure (lines, aclname, options):
+    if find_block(lines, aclname, exim4conf_remove_block):
+        raise RunException, "Already Configured"
+
+    acltype = options.get("acltype", None)
+    
+    if not acltype:
+        for knowntype in exim4conf_texts.keys():
+            if knowntype in aclname:
+                acltype = knowntype
+                break
+        else:
+            raise RunException, \
+                  ("I cannot guess what type of ACL '%s' is.\n"
+                   "Please supply '-acltype={rcpt|data}'.")%aclname
+
+    elif not acltype in exim4conf_texts:
+        raise RunException, "Invalid ACL type: '%s'"%acltype
+        
+
+    if "netmask" in options:
+        try:
+            netmask = int(options["netmask"])
+        except:
+            raise "Invalid netmask size: '%s'"%options["netmask"]
+
+        hostaddress="${mask:$sender_host_address/%s}"%options["netmask"]
+
+    else:
+        hostaddress="$sender_host_address"
+
+    text = exim4conf_texts[acltype]%hostaddress
+
+    for lineno in xrange(len(lines)):
+        if lines[lineno].strip().startswith(aclname + ":"):
+            lines[lineno+1:lineno+1] = text.splitlines(True)
+            return "OK"
+
+    else:
+        raise RunException, "Could not find ACL '%s'"%aclname
+
+
+def run (command, *args):
+    return (spawnl(P_WAIT, command, command.split("/")[-1], *args) == 0)
+
+
+def exim4_setup (filename, aclname, function, options, doupdate):
+    try:
+        fp = open(filename, "r")
+        lines = fp.readlines()
+        fp.close()
+
+        message = function(lines, aclname, options)
+
+        if doupdate:
+            fp = file(filename, "w")
+            fp.writelines(lines)
+            fp.close()
+
+        ok = True
+
+    except IOError, e:
+        ok, message = False, e[1]
+
+
+    except RunException, e:
+        ok, message = False, e[0]
+    
+
+    if not "quiet" in options:
+        if len(filename) > 40:
+            name = "..." + filename[-37:]
+        else:
+            name = filename.ljust(40)
+        stderr.write("%s: %s\n"%(name, message))
+
+
+    return ok or ("no-fail" in options)
+
+
+
+def exim4_default_setup (description, function, options, doupdate):
+    if not "quiet" in options:
+        stderr.write("%s\n"%description)
+
+    results = {}
+
+    for (filename, aclname) in exim4conf_default_places:
+        ok = exim4_setup(filename, aclname, function, options, doupdate)
+        results[aclname] = results.get(aclname, False) or ok
+
+    return min(results.values())
+
+
+
+
+
+def usage (progname, message=None):
+    if message:
+        stderr.write("%s: %s\n"%(progname, message))
+
+    stderr.write("\n".join([
+        "Usage: %s {add|remove|test} [options] [<file> <acl_name>]"%progname,
+        "",
+        "  Add, remove or test for greylistd support in the given Exim 4",
+        "  configuration file and Access Control List (ACL).",
+        "",
+        "  If no file or ACL name is supplied, changes are made to the",
+        "  default Exim 4 configuration files for your distribution.",
+        "",
+        "  -quiet",
+        "      Do not print anything to standard output.",
+        "  -no-fail",
+        "      Exit status is zero even on failure",
+        "  -no-reload",
+        "      Do not tell Exim4 to reload configuration after add / remove.",
+        "  -netmask=<bits>",
+        "      Filter the remote host address though a netmask of the given",
+        "      size (useful values are between 16 and 31) before it is passed",
+        "      to greylistd.  Hosts within the same network are then pooled",
+        "      together as if they represented a single host.",
+        "  -acltype={rcpt|data}",
+        "      Insert a statement suitable for an ACL used to validate the",
+        "      SMTP 'RCPT TO:' command or the message DATA, respectively.",
+        "      This is implicit when the supplied ACL name contains either of",
+        "      the substrings 'rcpt' or 'data' (such as Debian's default",
+        "      'acl_check_rcpt' and 'acl_check_data'); otherwise this option",
+        "      has to be present for the 'add' command",
+        ""]))
+
+    exit((-1, 0)[message == None])
+
+
+progname = None
+action   = None
+filename = None
+aclname  = None
+options  = {}
+
+
+for arg in argv:
+    if progname is None:
+        progname = arg.split("/")[-1]
+
+    elif arg.startswith("-"):
+        try:
+            (option, value) = arg.lstrip("-").split("=", 1)
+        except:
+            (option, value) = arg.lstrip("-"), None
+            
+        options[option] = value
+
+    elif not action:
+        action = arg.lower()
+
+    elif not filename:
+        filename = arg
+
+    elif not aclname:
+        aclname = arg
+
+    else:
+        usage(progname, "Too many arguments")
+
+
+if action == "add":
+    function, doupdate = exim4_configure, True
+    description = "Adding greylistd support to Exim 4 configuration files"
+
+elif action == "remove":
+    function, doupdate = exim4_deconfigure, True
+    description = "Removing greylistd support from Exim 4 configuration files"
+
+elif action == "test":
+    function, doupdate = exim4_deconfigure, False
+    description = "Testing for greylistd support in Exim 4 configuration files"
+
+elif action in (None, "help"):
+    usage(progname)
+
+else:
+    usage(progname, "Invalid action: %s"%action)
+
+
+if aclname:
+    ok = exim4_setup(filename, aclname, function, options, doupdate)
+
+elif filename:
+    usage(progname, "If you supply a file name, you must also supply an ACL")
+
+else:
+    ok = exim4_default_setup(description, function, options, doupdate)
+
+
+if ok and doupdate and not ("no-reload" in options):
+    run("/usr/sbin/invoke-rc.d", "exim4", "reload")
+
+
+exit((0, -1)[not ok])

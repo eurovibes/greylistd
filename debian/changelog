@@ -1,0 +1,269 @@
+greylistd (0.8.2) unstable; urgency=low
+
+  * Added French translation by Jean-Luc Coulon.  Closes: #292881.
+  * The exception clause that is invoked when socket cannot be created
+    referred to an old/undefined variable, thus causing a secondary
+    exception and a misleading error message.  Fixed.
+
+ -- Tor Slettnes <tor@slett.net>  Sun,  6 Feb 2005 05:19:23 -0800
+
+greylistd (0.8.1) unstable; urgency=low
+
+  * I had exprimented with python-based config/postinst, and inadvertently
+    made "python" a pre-dependency.  Reverted back to a regular dependency.
+  * Updated to standards-version 3.6.1
+  * Added support for "po-debconf" (DebConf >= 4.1.16, "po/", ..)
+  * Updated "templates" to remove a non-essential question, as well as
+    references to widget labels ("Yes"/"No"), to the computer/program as
+    the first person ("I can do this for you..").  Closes: #290867.
+
+ -- Tor Slettnes <tor@slett.net>  Mon, 17 Jan 2005 16:11:45 -0800
+
+greylistd (0.8) unstable; urgency=low
+
+  * Modified templates, config, postinst, postrm scripts to add new
+    "greylist" user and group for the greylistd process, rather than
+    using the ownership of the MTA process.  (The MTA user should be part of
+    the "greylist" group).
+  * Security fix: Set permission bits to 0600 when saving files, to prevent
+    unauthorized users from peeking at greylist data.  (All access should go
+    via /var/run/greylistd/socket).
+  * Fixed exception logging; was indented wrongly, thus repeated
+    the error message several times in the log.
+  * Handle stdout "broken pipe" exception in "greylist" client program
+    (common when piping output through a pager like "most").
+  * Updated "greylistd-setup-exim4" to use try/except for runtime errors
+    rather than doing a lot of "if" statements.
+  * Beautified the "greylistd-setup-exim4" script and manual page a bit.
+
+ -- Tor Slettnes <tor@slett.net>  Wed,  5 Jan 2005 23:33:03 -0800
+
+greylistd (0.7) unstable; urgency=low
+
+  * greylistd-update-exim4 is no longer invoked via DebConf - modifying
+    conffiles (especially from another package) violates Debian Policy.
+    Instead, a note about its availabilty is presented, putting the burden
+    of actually running it on the local administrator.
+  * Removed /etc/default/greylist; the UGID setting is now written to
+    /etc/init.d/greylist (not a conffile) by DebConf.
+  * /etc/greylistd/config is no longer configured via DebConf; it remains
+    a conffile.
+  * Made package description more novice-friendly.  Closes: #287486.
+  * Internal type-aware function to parse configuration/data files, rather
+    than ConfigParser(), in order to save on memory during load/save ops.
+  * Better handling of exceptions - unexpected runtime exceptions are
+    logged (via syslog() or stderr).
+
+ -- Tor Slettnes <tor@slett.net>  Wed, 29 Dec 2004 09:48:29 -0800
+
+greylistd (0.6.6) unstable; urgency=low
+
+  * Another critical, dumb bug: Would crash on first save if "triplets"
+    file does not already exist.  Closes: #286364.
+  * Program would exit with socket error ('broken pipe') if the client
+    connected before receiving reply.
+  * Program died quietly on errors, because I had omitted a "raise" 
+    after cleanup in the exception handler.  Fixed.
+
+ -- Tor Slettnes <tor@slett.net>  Tue, 21 Dec 2004 00:14:43 -0800
+
+greylistd (0.6.5) unstable; urgency=high
+
+  * Fixed critical bug: "lastsave" timestamp was not updated after save
+    to disk, so the main loop tried to save continuously, and consumed
+    all available disk/cpu bandwidth.  Fixed.
+
+ -- Tor Slettnes <tor@slett.net>  Sat, 18 Dec 2004 23:49:25 -0800
+
+greylistd (0.6.4) unstable; urgency=low
+
+  * Fixed some spelling errors and unclear text in DebConf templates,
+    control file, and manual pages.
+  * "greylistd-setup-exim4" no longer prints error if "-no-fail" is given.
+    (We don't care to see "Not configured" or "Not found" messages for each
+    Exim 4 configuration file when we remove existing configuration prior to
+    installing new one).
+  * Option parsing in "greylistd-setup-exim4" is generalized/simplified.
+  * "greylist" client crashed if an empty response was received from the
+    daemon.
+
+ -- Tor Slettnes <tor@slett.net>  Wed, 15 Dec 2004 17:03:40 -0800
+
+greylistd (0.6.3) unstable; urgency=low
+
+  * Fixed problem with statistics counter; would overcount the
+    number of items that entered each list (white, grey).
+  * Fixed unlimited growth of items in 'newTriplets' list in the case
+    where these were not periodically flushed to file (i.e. when 
+    'savetriplets = false')
+  * Changed package description to reflect some more detail of how
+    greylistd interacts with MTA. Closes: #285346.
+  * Removed path names from the command synopsis line in the 
+    greylist(1) and greylistd(8) manual pages. Closes: #267225.
+  * Format "list" output to include date of last hit and number of hits
+    for each data set.  Closes: #268059.
+  * Greylist data is saved to temporary file, then renamed.
+    This prevents a race condition where all data can be lost in case
+    of a power failure or a full filesystem.  Closes #285343.
+    (Data is saved periodically as of version 0.6).
+  * Restructured runCommand() routine - it no longer walks through
+    a large "if ... elif ... elif ... else" block, but tries to invoke
+    a "do_<command>" function according to the command specified.
+  * Arguments to actions must now be prefixed with (any number of) hyphens.
+    For instance, "greylist add --white", not "greylist add white".
+  * Added "--white", "--grey", and "--black" options to the "check" and
+    "update" commands; if specified, greylistd returns a boolean value
+    rather than a list name.  So "greylist --grey <data>" would show
+    whether <data> is currently in a "grey" state.
+	
+ -- Tor Slettnes <tor@slett.net>  Wed, 15 Dec 2004 00:41:37 -0800
+
+greylistd (0.6.2) unstable; urgency=low
+
+  * Fixed dumb int/string bug just introduced - prevented triplet
+    data from being loaded and crashed greylistd.
+
+ -- Tor Slettnes <tor@slett.net>  Tue, 14 Dec 2004 19:03:35 -0800
+
+greylistd (0.6.1) unstable; urgency=low
+
+  * Eliminated some bashisms in maintainer scripts (per lintian).
+
+ -- Tor Slettnes <tor@slett.net>  Tue, 14 Dec 2004 15:30:32 -0800
+
+greylistd (0.6) unstable; urgency=low
+
+  * Now uses DebConf for initial setup and configuration.
+  * New utility "greylistd-setup-exim4" adds/removes support for greylistd
+    in Exim 4 configuration files; optionally invoked via DebConf.
+  * Tries to detect ownership of MTA process, and set greylistd ownership
+    accordingly, to circumvent problems with users who cannot read.
+    Closes: #267075.
+  * 'whitelist-hosts' moved from /etc/mail to /etc/greylistd. Closes: #267221.
+  * 'whitelist-hosts' contains some text explaining syntax. Closes: #267314.
+  * 'whitelist-hosts' contains warning about lookup failures. Closes: #270814.
+  * Default/documented Exim 4 examples do not greylist authenticated clients.
+    Closes: #272572.
+  * Depend on Python version 2.3 or newer; also, program checks that we
+    are running a supported version.  Closes: #267296.
+  * Greylist data is now saved at regular intervals, as specified
+    in the configuration file (default is 300 seconds).  File saves can
+    also be triggerd with the "save" command.  Closes: #267316.
+  * The original (unhashed) greylist data is now retained in a
+    separate file; a "list" command gives access to it.
+  * Clean up (remove UNIX domain socket....) after exceptions.
+  * Init script supports 'reload' (saves greylist triplets).
+  * "restart" command in init script sleeps for one second after killing
+    old process, before starting new one.  Closes: #273089.
+
+ -- Tor Slettnes <tor@slett.net>  Tue, 14 Dec 2004 12:35:49 -0800
+
+greylistd (0.5.3) unstable; urgency=low
+
+  * Socket 'mode' setting in config file should be in [socket]
+    section, not in [data] section.  Closes: #261331.
+
+ -- Tor Slettnes <tor@slett.net>  Sun, 25 Jul 2004 18:52:59 -0700
+
+greylistd (0.5.2) unstable; urgency=low
+
+  * Removed '-N' suffix in version number, as this is currently a
+    native Debian package. Closes: #261097.
+  * Removed debian/greylistd, left over from prior "debmake".
+    Closes: #261094.
+  * Added copyright information in source files; fixed "copyright" 
+    file.  Closes: #261092.
+  * Added postrm script to remove greylist data. Closes: #261099.
+
+ -- Tor Slettnes <tor@slett.net>  Fri, 23 Jul 2004 11:05:44 -0700
+
+greylistd (0.5.1-2) unstable; urgency=low
+
+  * Added 'doc/examples/30_exim4-config_check_rcpt', containing the 
+    stock "acl_check_rcpt" from the exim4-config package, but with
+    the 'greylistd' stuff included.   
+
+ -- Tor Slettnes <tor@slett.net>  Wed, 30 Jun 2004 10:09:17 -0700
+
+greylistd (0.5.1-1) unstable; urgency=low
+
+  * Inserting the snippet from 'exim4-acl-example.txt' into
+    a default Debian Exim 4 configuration would cause the server
+    to become an open relay (in case of a NULL envelope sender).
+    Added "domains = +local_domains ..." condition to prevent this.
+    Closes: #254633.
+  * Redid debian/ directory to use 'debhelper' instead of 'debmake'.
+
+ -- Tor Slettnes <tor@slett.net>  Tue, 29 Jun 2004 01:22:28 -0700
+
+greylistd (0.5-1) unstable; urgency=low
+
+  * Added configuration file /etc/default/greylistd, to allow
+    'greylistd' to run under a custom UID/GID (such as
+    Debian-exim:Debian-exim) rather than the default 'mail:mail'.
+    Also modified "init" script accordingly.
+  * Documented the above in README.debian.  Closes: #253764.
+  * greylistd.8, exim4-acl-example.txt: Added a warning about what
+    happens when 'greylistd' is not running (all deliveries are
+    subject to a temporary failure); along with a suggested
+    workaround.  Closes: #253872.
+  * Removed (normally ineffective) owner settings from
+    '/etc/greylistd/config', and from "greylistd" code.
+  * Added IP subnet example to whitelist-hosts.  Closes: #253762.
+
+ -- Tor Slettnes <tor@slett.net>  Mon, 14 Jun 2004 13:29:18 -0700
+
+greylistd (0.4-1) unstable; urgency=low
+
+  * Statistics reporting was broken - first/last timestamps were reversed.
+    Also beautified report output a little bit.
+  * Removed reference to "as of version 0.1" in greylistd(8) man page.
+  * Updated README.debian with a sentence about Exim and socket permissions.
+  * Updated Exim4 configuration example to remove semi-redundant condition.
+
+ -- Tor Slettnes <tor@slett.net>  Wed,  9 Jun 2004 11:38:34 -0700
+
+greylistd (0.3-2) unstable; urgency=low
+
+  * Cleaned up Debian 'conffiles' & other stuff based on lintian report.
+
+ -- Tor Slettnes <tor@slett.net>  Tue,  1 Jun 2004 10:33:17 -0700
+
+greylistd (0.3-1) unstable; urgency=low
+
+  * 'greylist' did not run; "ConfigParser" was not imported. DOH!
+  * Added support for blacklists; entries have to be manually entered.
+  * Added collection of hit statistics, and a 'stats' operation
+  * Added a 'clear' operation to remove all data and statistics
+  * Updated Exim4 configuration example to add a list of whitelisted
+    hosts that would not be subject to greylisting.  Also modified
+    the data triplet that is passed to greylistd, so that it always
+    includes the IP address, rather than the rDNS name, of the sending
+    host.
+  * Added a new file: examples/whitelist-hosts
+  * Updated manual pages.
+
+ -- Tor Slettnes <tor@slett.net>  Fri, 28 May 2004 12:49:36 -0700
+
+greylistd (0.2-1) unstable; urgency=low
+
+  * greylistd can now handle more than one connection at a time.
+  * greylistd handles a -HUP signal and other exceptions more gracefully.
+  * Corrected the error message "Unknown command" in 'greylist' to
+    "Unknown action", as printed in the help output.
+  * The path of the configuration file is now /etc/default/greylistd.
+    It contains two new sections: [socket] and [data], listing the 
+    file path of the UNIX domain socket and the data hash file,
+    respectively.
+  * The default filemode of the socket is now 0660; this can be
+    modified in the configuration file.
+  * In the source archive, manual pages have been moved out from the
+    "debian/" subdirectory into "doc/", as these are not Debian-specific.
+
+ -- Tor Slettnes <tor@slett.net>  Wed, 26 May 2004 14:38:00 -0700
+
+greylistd (0.1-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Tor Slettnes <tor@slett.net>  Wed, 19 May 2004 16:38:52 -0700

@@ -1,0 +1,30 @@
+########################################################################
+### FILE:	/etc/greylistd/whitelist-hosts
+### PURPOSE:	List of hosts from which we do not want to greylist mail
+########################################################################
+### 
+### This file is not actually read by greylistd, but is normally referenced
+### from the Mail Transport Agent (MTA) that invokes greylistd.  As such,
+### the format of the entries is MTA-dependent.
+### 
+### Most MTAs support at least the following:
+###  - A single IPv4 address, consisting of 4 octets (0-255):  192.168.0.1
+###  - Between one and three octets, indicating an IPv4 network:  192.168.0
+###  - A single host name:  gluck.debian.org
+###  - Wildcards in a host name:  *.debian.org
+###
+### Exim 4 supports much more elaborate syntax, including regular expressions
+### starting with "^" (e.g.: ^..crm[hx]c..\.comcast\.net), IP addresses with
+### netmasks (10.0.0.0/8, 10.0.0.0/255.0.0.0), etc.  For full detail, refer to
+### section 10.8 in the Exim 4 "spec.txt" file.
+###
+### !!! IMPORTANT !!!
+### If you use host names in this list, beware that lookup failures will
+### cause your MTA to temporarily reject the mail - indefinitely.  For that
+### reason, it is generally better to use IP addresses than host names.
+
+#*.debian.org
+#*.amazon.com
+#^..crm[hx]c..\.comcast\.net
+#10.0.0.0/8
+

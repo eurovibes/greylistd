@@ -1,0 +1,5 @@
+program/greylistd-setup-exim4 usr/sbin
+program/greylistd             usr/sbin
+program/greylist              usr/bin
+config/config                 etc/greylistd
+config/whitelist-hosts        var/lib/greylistd

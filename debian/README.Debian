@@ -1,0 +1,104 @@
+Setting up greylistd on a Debian system
+---------------------------------------
+  - Your Mail Transport Agent (MTA) needs to access to the greylistd 
+    communication socket, /var/run/greylistd/socket.  This means that the
+    account that owns your MTA process needs to be a member of the "greylist"
+    group.
+
+    If Exim 4 was installed when you last installed/upgraded greylistd, this
+    should have been confiured already.  If not, you can run the following
+    command as the "root" user:
+      # adduser Debian-exim greylist
+
+    If you built Exim 4 from sources, or if you use a different MTA, add
+    the appropriate username to this group the same way.
+
+  - Then, your MTA needs to be configured to talk to greylistd during n
+    incoming SMTP transactions.  If you are using Exim 4 (with the
+    configuration supplied in Debian's "exim4-config" package), you can
+    add this support by simply running:
+        # greylistd-setup-exim4 add
+
+    Alternatively, you can run:
+	# greylistd-setup-exim4 add -netmask=24
+
+    The -netmask=24 option is used to group the IP addresses of the sender
+    hosts into 24-bit networks, so that pools of several Mail Sending Agents
+    (MSAs) within a given network are treated as a single host.
+
+    This will modify the following files (if present):
+	/etc/exim4/exim4.conf.template
+	/etc/exim4/conf.d/acl/30_exim4-config_check_rcpt
+	/etc/exim4/conf.d/acl/40_exim4-config_check_data
+
+    Two statements are then inserted into Exim's Access Control Lists (ACLs):
+     * One in the "acl_check_rcpt" ACL, for regular mail.
+     * One in the "acl_check_data" ACL, for bounces (mail with no envelope
+       sender).
+
+  - If your ACL configration is different from that supplied with Debian
+    (i.e. if you use different ACL names and/or file locations), you can
+    run the command:
+       # greylistd-setup-exim4 add <configfile> <aclname>
+
+    (For help on syntax, run this command without any arguments.)
+
+
+  - If you prefer to edit your Exim 4 configuration files by hand, look
+    in /usr/share/doc/greylistd/examples/exim4-acl-example.txt for an idea.
+
+
+  - Whenever these configuration files change in Debian's "exim4-config"
+    package, you will be asked if you want to replace your existing
+    configuration with new versions.  If you do so, you will need to re-run
+    the "greylistd-setup-exim4" command as described above (or re-apply
+    any manual changes) for greylisting to remain in effect.
+
+
+  - REMEMBER!  Before you remove the "greylistd" package, remove any
+    "greylistd" statements you have inserted into the Exim configuration
+    files.  If you use Debian's default Exim 4 configuration, run:
+      # greylistd-setup-exim4 remove
+
+    Else, run:
+      # greylistd-setup-exim4 remove <configfile> <aclname>
+
+
+  - If you use a different MTA, you may need to do some research into how
+    you can defer incoming mail deliveries based on either of the following:
+     * A dialogue over a UNIX domain socket (/var/run/greylistd/socket), or
+     * An exit code or string returned from an external program ("greylist").
+
+    Looking at the greylistd source (/usr/sbin/greylistd) may be helpful.
+    If you come up with something, or have questions, please let me know!
+
+
+  - Feel free to edit /etc/greylistd/whitelist-hosts according to your needs.
+    This file contains hosts from which greylisting will not be performed, at
+    least per the default Exim 4 greylistd ACL statement.  Typically, this
+    would be:
+
+     * Hosts from which you receive relayed messages, such as mailing
+       list servers or your own backup MX hosts
+
+     * "well-behaved" hosts (depending on your perspective) from which 
+       you find that greylisting is ineffective
+
+    A separate whitelist exists in /var/lib/greylistd/whitelist-hosts;
+    this is a copy of Evan Harris' list of some "ill-behaved", but legitimate
+    hosts (such as groups.yahoo.com) that are known to have problems sending
+    to servers that respond with temporary failures (as in the case of
+    greylisting).
+
+
+  - Read the manuals! They contain everything you want to know.
+    "man greylistd" and "man greylist".
+
+
+If you have any questions, feel free to send me an e-mail (but, ahem,
+you may have to wait at least an hour or so for me to see it and
+respond to it... :-)
+
+Good Luck!
+
+Tor Slettnes <tor@slett.net>

@@ -1,0 +1,47 @@
+########################################################################
+### FILE:	/etc/greylistd/config
+### PURPOSE:	Configuration settings for the "greylistd(8)" daemon
+########################################################################
+
+[timeouts]
+# Initial delay before previously unknown triplets are allowed to pass
+# Default is 1 hour = 3600 seconds
+retryMin     = 3600
+
+# Lifetime of triplets that have not been retried after initial delay
+# Default is 8 hours = 28800 seconds
+retryMax     = 28800
+
+# Lifetime of auto-whitelisted triplets that have allowed mail to pass
+# Default is 60 days = 5,184,000 seconds
+expire       = 5184000
+
+
+[socket]
+# Path to the UNIX domain socket on which greylistd will listen.
+# The parent directory must be writable by the user running 'greylistd'.
+# Default path is "/var/run/greylistd/socket".
+path         = /var/run/greylistd/socket
+
+# UNIX filemode of that socket.  See "chmod(1)" for the meaning of this.
+# Default mode is 0660.
+mode         = 0660
+
+
+[data]
+# Update interval -- save data to the filesystem if if has been more
+# than this many seconds (default 600) since the last save.
+update       = 600
+
+# Path to the file containing the current state of each data item (triplet),
+# along with some general statistics. 
+# Default is "/var/lib/greylistd/states".
+statefile    = /var/lib/greylistd/states
+
+# Path to the file that will contain the original, unhashed data for the 
+# "list" command.  Default is "/var/lib/greylistd/triplets".
+tripletfile  = /var/lib/greylistd/triplets
+
+# Whether or not to retain unhashed triplets, for the "list" command.
+# Default is "true"
+savetriplets = true

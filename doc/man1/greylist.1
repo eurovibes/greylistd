@@ -1,0 +1,122 @@
+.\" Simple greylisting system for mail transport agents
+.TH "greylist" "1" "0.8" "Tor Slettnes" "Mail Administration"
+.SH "NAME"
+greylist \- command line interface to \fBgreylistd(8)\fP
+.SH "SYNOPSIS"
+.BR "greylist " { " -h " | " --help " | " help " }
+.br
+.B "greylist "
+.I "operation ..."
+.SH "DESCRIPTION"
+This program provides a command line interface to \fBgreylistd\fP(8);
+please refer to that manual page for more information on the purpose
+and functionality of this program.
+
+
+.SH "USAGE"
+In the following discussion, \fIdata...\fP typically refers to
+the following \fItriplet\fP of information:
+
+  \fI<sending host's IP address> <sender@address> <recipient@address>\fP
+
+The following operations are available:
+.IP "\fBadd\fP [\fB--white\fP|\fB--grey\fP|\fB--black\fP] \fIdata...\fP"
+Add \fIdata\fP to the corresponding list (\fBwhite\fP if unspecified).
+If the \fItriplet\fP of a future mail deliveriy (subject to timeouts)
+matches this data, the idea is that the message would be accepted,
+temporarily rejected, or permanently rejected, respectively.
+.IP "\fBdelete\fP \fIdata...\fP" 
+Remove \fIdata\fP from all lists.  If the data exists in any list, the
+command returns an exit status of 0, otherwise -1.  A message is
+printed on standard output indicating the action taken.
+.IP "\fBcheck\fP [\fB--white\fP|\fB--grey\fP|\fB--black\fP] \fIdata...\fP"
+Check the current status of \fIdata\fP, i.e. if a message delivery
+would succeed if its \fItriplet\fP matched this data.  If a list is
+specified, the word "true" or "false" is printed, indicating whether
+the data was in the corresponding list; the exit status is also set
+accordingly.  Otherwise, one of the words "white", "grey", and "black"
+is written on standard output, and the exit status is 0, 1, or 2, 
+respectively.
+
+NOTE: This operation is non-intrusive, and thus does not update any of
+the greylist data.  So, for instance, if the \fIdata\fP is currently
+in the "grey" list, but its minimum retry time (\fBretryMin\fP) has
+elapsed, the text "white" would be printed.  However, unless an
+\fBupdate\fP takes place prior to the \fBretryMax\fP timeout, the
+\fIdata\fP would still expire from the "grey" list.
+.IP "\fBupdate\fP [\fB--white\fP|\fB--grey\fP|\fB--black\fP] \fIdata...\fP"
+Same, but also update the greylist data accordingly.  So if \fIdata\fP
+is currently greylisted, but the minimum retry time \fBretryMin\fP has
+elapsed since it was first seen, \fIdata\fP is moved to the "white"
+list.
+
+This operation would normally be used by mail transport agents (MTAs).
+.IP "\fBstats\fP"
+Print some statistics on greylist utilization and hits. 
+.IP "\fBlist\fP [\fB--white\fP] [\fB--grey\fP] [\fB--black\fP]"
+Print available (original/unhashed) data items from the corresponding
+list(s).
+
+NOTE: Internally, \fBgreylistd\fP(8) hashes the provided data into a
+single 32-bit value for efficiency.  Prior to version 0.6, the
+original data was not retained; as of version 0.6, data is saved if
+the "savetriplets" setting in the [data] section of the configuration
+file is "true".  Only data items (i.e. triplets) that have been seen
+while this setting were enabled can be listed.
+.IP "\fBsave\fP"
+Force greylist data to be immediately saved (synchronized) to the
+filesystem.
+
+Data is also saved after any operation if a certain \fIupdate
+interval\fP (default is 300 seconds/5 minutes) has elapsed since the
+last save, and there are no pending requests to \fBgreylistd\fP(8).
+
+.IP "\fBreload\fP"
+Save greylist data to files, then reload configuration and data.
+
+.IP "\fBclear\fP [\fB--white\fP] [\fB--grey\fP] [\fB--black\fP]"
+Clear all items in the specified list(s), or all lists if none is
+specified.
+
+If the whitelist is cleared, \fIall\fP new data trilplets will
+initially be in a "grey" state.
+
+Use with caution!
+.SH "EXAMPLES"
+.IP "greylist add --white 1.2.3.4 mailinglist@somewhere subscriber@yourhost"
+Whitelists messages received from the IP address 1.2.3.4 on behalf of 
+<mailinglist@somewhere> to <subscriber@yourhost>.
+.IP "greylist check --grey 1.2.3.4 mailinglist@somewhere subscriber@yourhost"
+Prints "true" or "false" on standard output, depending on whether mail
+received from the IP address 1.2.3.4 on behalf of
+<mailinglist@somewhere> to <subscriber@yourhost> should be deferred or
+not, respectively.  The data is neither recorded nor changed to a
+"white" state. 
+.SH "FILES"
+.SS "/var/run/greylistd/socket"
+The UNIX domain socket providing the main interface to "greylistd".
+.PP
+.SH "AUTHOR"
+This python script and manual page is written by Tor Slettnes,
+originally for Debian GNU/Linux.
+.SH "COPYRIGHT"
+Copyright \(co 2004-2005 Tor Slettnes.
+.IP
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+.PP
+On a Debian GNU/Linux system, the full text of the GPL is available in
+/usr/share/common-licenses/GPL.  It is also available at:
+	http://www.gnu.org/licenses/gpl.html
+.SH "SEE ALSO"
+.IP "\fBgreylistd\fP(8)"
+Greylisting daemon.
+.IP "\fBgreylistd-setup-exim4\fP(8)"
+Utility to add/remove support for greylistd in Exim 4 configuration files.

@@ -1,0 +1,69 @@
+#!/bin/sh
+########################################################################
+### FILE:	/etc/init.d/greylist
+### PURPOSE:	Start/stop the greylistd(8) daemon.
+########################################################################
+
+client=/usr/bin/greylist
+daemon=/usr/sbin/greylistd
+rundir=/var/run/greylistd
+datadir=/var/lib/greylistd
+pidfile=$rundir/pid
+socket=$rundir/socket
+user=greylist
+
+
+# See if the daemon is present
+test -x "$daemon" || exit 0
+
+case "$1" in
+    start)
+	if [ -e "$socket" ]
+	then
+	    echo "$0:"
+	    echo "  Another instance of \`${daemon##*/}' seems to be running."
+	    echo "  If this is not the case, please remove \"$socket\"."
+	    exit 1
+	fi
+
+	echo -n "Starting greylisting daemon: "
+	start-stop-daemon --start --background \
+	    --chuid "$user" \
+	    --pidfile "$pidfile" --make-pidfile \
+	    --exec "$daemon" &&
+	    echo "${daemon##*/}."
+	;;
+
+
+    stop)
+	echo -n "Stopping greylisting daemon: "
+	start-stop-daemon --stop --pidfile "$pidfile" &&
+	    rm -f "$pidfile" &&
+	    echo "${daemon##*/}."
+	;;
+
+
+    reload|force-reload)
+	"$client" reload
+	;;
+
+    status)
+	"$client" stats
+	;;
+
+
+    restart)
+	$0 stop
+	sleep 1
+	$0 start
+	;;
+
+
+    *)
+	echo "Usage: $0 {start|stop|restart|reload|force-reload|status}" >&2
+	exit 1
+	;;
+esac
+
+exit 0
+
