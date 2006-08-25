@@ -17,37 +17,29 @@ acl_check_rcpt:
   #
   # Perform greylisting on incoming messages from remote hosts.
   # We do NOT greylist messages with no envelope sender, because that
-  # would conflict with remote hosts doing callback verifications, and
-  we
-  # might not be able to send mail to such hosts for a while (until
-  the
+  # would conflict with remote hosts doing callback verifications, and we
+  # might not be able to send mail to such hosts for a while (until the
   # callback attempt is no longer greylisted, and then some).
   #
   # We also check the local whitelist to avoid greylisting mail from
-  # hosts that are expected to forward mail here (such as backup MX
-  hosts,
+  # hosts that are expected to forward mail here (such as backup MX hosts,
   # list servers, etc).
   #
   # Because the recipient address has not yet been verified, we do so
   # now and skip this statement for non-existing recipients.  This is
-  # in order to allow for a 550 (reject) response below.  If the
-  delivery
-  # happens over a remote transport (such as "smtp"), recipient
-  callout
+  # in order to allow for a 550 (reject) response below.  If the delivery
+  # happens over a remote transport (such as "smtp"), recipient callout
   # verification is performed, with the original sender intact.
   #
   defer
-    message        = $sender_host_address is not yet authorized to
-    deliver \
-                     mail from <$sender_address> to
-		     <$local_part@$domain>. \
+    message        = $sender_host_address is not yet authorized to deliver \
+                     mail from <$sender_address> to <$local_part@$domain>. \
                      Please try later.
     log_message    = greylisted.
     !senders       = :
     !hosts         = : +relay_from_hosts : \
                      ${if exists {/etc/greylistd/whitelist-hosts}\
-                                 {/etc/greylistd/whitelist-hosts}{}} :
-				 \
+                                 {/etc/greylistd/whitelist-hosts}{}} : \
                      ${if exists {/var/lib/greylistd/whitelist-hosts}\
                                  {/var/lib/greylistd/whitelist-hosts}{}}
     !authenticated = *
@@ -76,7 +68,7 @@ expansion, as follows:
 
     condition   = ${if eq {grey}\
                           {${readsocket{/var/run/greylistd/socket}\
-                                       {${mask:sender_host_address/24}\
+                                       {${mask:$sender_host_address/24}\
                                         $sender_address\
                                         $local_part@$domain}\
                                        {5s}{}{}}}\

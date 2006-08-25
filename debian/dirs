@@ -1,5 +1,4 @@
 usr/sbin
-etc/default
 etc/greylistd
 var/lib/greylistd
 var/run/greylistd

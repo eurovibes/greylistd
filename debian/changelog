@@ -1,3 +1,20 @@
+greylistd (0.8.3.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix a bug with blacklist treated as whitelist (Closes: #338653)
+  * Fix text wrapped in exim4-acl-example.txt (Closes: #309925)
+  * Add vi translation (Closes: #311890)
+  * Add ja translation (Closes: #310217)
+  * Add cs translation (Closes: #310464)
+  * Bump standards version
+  * Remove debian/conffiles
+  * Switch to dh_python
+  * Switch to debhelper compat 5
+  * Update FSF address
+  * Depends on adduser
+
+ -- Julien Danjou <acid@debian.org>  Fri, 25 Aug 2006 14:22:42 +0200
+
 greylistd (0.8.3) unstable; urgency=low
 
   * Changed value of "false" from -1 to 1 in 'config' DebConf module.

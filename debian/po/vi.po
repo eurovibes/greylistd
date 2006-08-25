@@ -1,0 +1,146 @@
+# Vietnamese Translation for greylistd.
+# Copyright © 2005 Free Software Foundation, Inc.
+# Clytie Siddall <clytie@riverland.net.au>, 2005.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: greylistd 0.8.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-01-17 16:10-0800\n"
+"PO-Revision-Date: 2005-06-04 12:38+0930\n"
+"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#.Type: boolean
+#.Description
+#:../templates:4
+msgid "Restart Exim after adding it to the greylist group?"
+msgstr "Khởi chạy lại trình Exim sau khi thêm nó vào nhóm danh sách màu xám (greylist) không?"
+
+#.Type: boolean
+#.Description
+#:../templates:4
+msgid "You are using Exim 4 as your Mail Transport Agent (MTA).  Great!"
+msgstr "Bạn đang sử dụng trình Exim 4 là tác nhân truyền thư (Mail Transport Agent: MTA): hay quá!"
+
+#.Type: boolean
+#.Description
+#:../templates:4
+msgid ""
+"The \"Debian-exim\" user will be added to the \"greylist\" group, so that "
+"the Exim daemon process can talk to greylistd.  However, for this change to "
+"take effect, the process must also be restarted."
+msgstr "Sẽ thêm người dùng «Debian-exim» vào nhóm «danh sách màu xám», để mà tiến trình nền Exim có thể liên lạc với trình nền greylistd. Tuy nhiên, để áp dụng thay đổi này, cũng cần phải khởi chạy lại tiến trình Exim."
+
+#.Type: note
+#.Description
+#:../templates:13
+msgid "Exim 4 needs additional configuration"
+msgstr "Trình Exim 4 cần đến cấu hình thêm."
+
+#.Type: note
+#.Description
+#:../templates:13
+msgid ""
+"For greylisting to become effective, your Mail Transport Agent (MTA) needs "
+"to talk to greylistd while receiving incoming mail; and depending on the "
+"response, issue a temporary rejection (451 SMTP code) to the remote host."
+msgstr "Để sử dụng khả năng danh sách màu xám một cách hữu ích, tác nhân truyền thư của bạn cần đến có thể liên lạc với trình nền greylistd trong khi nhận những thư được gửi đến, và (phụ thuộc vào hồi đáp) gửi thông điệp từ chối tạm thời (mã SMTP 451) cho máy ở xa."
+
+#.Type: note
+#.Description
+#:../templates:13
+msgid ""
+"Since you are using Exim 4 as your MTA, a script is available for you to "
+"perform this task.  At a root prompt, type:\n"
+" # greylistd-setup-exim4 add\n"
+"If you overwrite your Exim configuration files in the future (for instance, "
+"when upgrading Exim), you may need to re-run this command."
+msgstr "Vì bạn đang sử dụng trình Exim 4 là tác nhân truyền thư, có một tập lệnh sẵn sàng để thực hiện công việc này. Tại một dấu nhắc người chủ thì hãy gõ:\n"
+" # greylistd-setup-exim4 add\n"
+"(greylistd thiết lập exim4 thêm)\n"
+"Nếu bạn ghi đè lên tập tin cấu hình Exim 4 trong tương lai (lấy thí dụ, khi nâng cấp trình Exim) thì có lẽ sẽ cần phải chạy lại lệnh này."
+
+#.Type: note
+#.Description
+#:../templates:13
+msgid ""
+"Later, before you uninstall \"greylistd\", you want to run:\n"
+" # greylistd-setup-exim4 remove"
+msgstr "Lần sau, trước khi bạn hủy cài đặt trình nền «»greylistd» bạn nên chạy:\n"
+"# greylistd-setup-exim4 remove\n"
+"(greylistd thiết lập exim4 loại bỏ)"
+
+#.Type: note
+#.Description
+#:../templates:13
+msgid ""
+"For more options and help on usage, run the command without any arguments, "
+"or see the \"greylistd-setup-exim4(8)\" manual page.  One suggested option "
+"for the \"add\" command is \"-netmask=24\"."
+msgstr "Để xem tùy chọn thêm và trợ giúp về cách sử dụng, hãy chạy lệnh ấy không có đối số này, hoặc xem trang hướng dẫn (man) «greylistd-setup-exim4(8)». Một tùy chọn được đệ nghị  cho lệnh «thêm» (add) là «-netmask=24»."
+
+#.Type: note
+#.Description
+#:../templates:13
+msgid ""
+"The reason this operation is not performed automatically is that Exim's "
+"configuration files are tagged as \"conffiles\", so per Debian Policy they "
+"are completely under your control.  Only you can change them."
+msgstr "Lý do không tự động thực hiện thao tác này là các tập tin cấu hình của Exim 4 được nhãn là «conffiles» (tập tin cấu hình), thì với điều kiện của chính thức Debian, bạn điều khiển hoàn thành những tập tin ấy. Chỉ bạn có thể sửa đổi chúng thôi."
+
+#.Type: note
+#.Description
+#:../templates:13
+msgid ""
+"If you prefer to configure Exim 4 for greylistd by hand, please see /usr/"
+"share/doc/greylistd/README.Debian."
+msgstr "Nếu bạn muốn tự cấu hình trình Exim 4 cho trình greylistd, hãy xem tập tin /usr/share/doc/greylistd/README.Debian."
+
+#.Type: note
+#.Description
+#:../templates:40
+msgid "Your MTA needs additional configuration"
+msgstr "Tác nhân truyền thư của bạn cần có cấu hình thêm."
+
+#.Type: note
+#.Description
+#:../templates:40
+msgid ""
+"For greylisting to become effective, two things must happen:\n"
+" - Your Mail Transport Agent (MTA) needs to talk to greylistd while\n"
+"   receiving incoming mail, and depending on the response, issue a\n"
+"   temporary rejection (451 SMTP response) to the remote host.\n"
+" - The account under which your MTA runs needs to be added to the\n"
+"   \"greylist\" group.  After this, your MTA needs to be restarted."
+msgstr "Để sử dụng khả năng danh sách màu xám một cách hữu ích, phải làm hai điều:\n"
+"• Tác nhân truyền thư (MTA) cần phải liên lạc với trình nền greylistd\n"
+"trong khi nhận những thư được gửi đến, và (phụ thuộc vào hồi đáp)\n"
+"gửi một thông điệp từ chối (mà SMTP 451) cho máy ở xa.\n"
+"• Cần phải thêm tài khoản dưới mà có chạy tác nhân truyền thư của bạn,\n"
+"vào nhóm «danh sách màu xám» (greylist).\n"
+"Sau đó, cần phải khởi chạy lại tác nhân truyền thư."
+
+#.Type: note
+#.Description
+#:../templates:40
+msgid ""
+"Unfortunately, this package supports only Debian's default Exim 4 "
+"configuration.  Since you seem to be using a different MTA, have a look at "
+"the greylistd(8) manual page for some information on communicating with "
+"greylistd."
+msgstr "Rất tiếc là gói tin này hỗ trợ chỉ cấu hình Exim 4 mặc định của Debian. Vì hình như bạn đang sử dụng một tác nhân truyền thư khác, hãy xem trang hướng dẫn (man) greylistd(8) để tìm một phần thông tin về liên lạc với trình greylistd."
+
+#.Type: note
+#.Description
+#:../templates:40
+msgid ""
+"There may also be other greylisting solutions available that suit your MTA "
+"better; see the \"Links\" section at:\n"
+"   http://projects.puremagic.com/greylisting/"
+msgstr "Cũng có thể có cách khác giải quyết vấn đề sử dụng danh sách màu xám, mà thích hợp với tác nhân truyền thư bạn: hãy xem phần «Links» (liên kết) tại địa chỉ này:\n"
+"• http://projects.puremagic.com/greylisting/"

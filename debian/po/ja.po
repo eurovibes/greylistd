@@ -1,0 +1,178 @@
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: greylistd 0.8.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-01-17 16:10-0800\n"
+"PO-Revision-Date: 2005-05-13 00:08+0900\n"
+"Last-Translator: Hideki Yamane <henrich@samba.gr.jp>\n"
+"Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=EUC-JP\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../templates:4
+msgid "Restart Exim after adding it to the greylist group?"
+msgstr "Exim を greylist グループに追加後、再起動しますか?"
+
+#. Type: boolean
+#. Description
+#: ../templates:4
+msgid "You are using Exim 4 as your Mail Transport Agent (MTA).  Great!"
+msgstr ""
+"メール転送エージェント (MTA) として Exim 4 を使っているようですね。素晴らし"
+"い!"
+
+#. Type: boolean
+#. Description
+#: ../templates:4
+msgid ""
+"The \"Debian-exim\" user will be added to the \"greylist\" group, so that "
+"the Exim daemon process can talk to greylistd.  However, for this change to "
+"take effect, the process must also be restarted."
+msgstr ""
+"\"Debian-exim\" ユーザが \"greylist\" グループに追加されるので、Exim デーモン"
+"プロセスは greylistd と通信ができます。しかし、この変更を有効にするにはプロセ"
+"スを再起動する必要があります。"
+
+#. Type: note
+#. Description
+#: ../templates:13
+msgid "Exim 4 needs additional configuration"
+msgstr "Exim 4 には追加設定が必要です"
+
+#. Type: note
+#. Description
+#: ../templates:13
+msgid ""
+"For greylisting to become effective, your Mail Transport Agent (MTA) needs "
+"to talk to greylistd while receiving incoming mail; and depending on the "
+"response, issue a temporary rejection (451 SMTP code) to the remote host."
+msgstr ""
+"greylisting を有効にするには、メール転送エージェント (MTA) がやってきたメール"
+"を受け取っている間に greylistd と通信する必要があり、加えて応答に依存している"
+"ので、リモートホストへは一時的な拒否 (451 SMTP コード) を返すようにしなければ"
+"いけません。"
+
+#. Type: note
+#. Description
+#: ../templates:13
+msgid ""
+"Since you are using Exim 4 as your MTA, a script is available for you to "
+"perform this task.  At a root prompt, type:\n"
+" # greylistd-setup-exim4 add\n"
+"If you overwrite your Exim configuration files in the future (for instance, "
+"when upgrading Exim), you may need to re-run this command."
+msgstr ""
+"MTA として Exim 4 を利用しているので、この作業を実行するスクリプトが利用可能"
+"です。root のプロンプトで、以下のように入力してください:\n"
+" # greylistd-setup-exim4 add\n"
+"今後 Exim の設定ファイルを上書きする場合 (例えば Exim をアップグレードする際"
+"など)、このコマンドを再実行する必要があるでしょう。"
+
+#. Type: note
+#. Description
+#: ../templates:13
+msgid ""
+"Later, before you uninstall \"greylistd\", you want to run:\n"
+" # greylistd-setup-exim4 remove"
+msgstr ""
+"その他、\"greylistd\" をアンインストールする前には以下を実行してください:\n"
+" # greylistd-setup-exim4 remove"
+
+#. Type: note
+#. Description
+#: ../templates:13
+msgid ""
+"For more options and help on usage, run the command without any arguments, "
+"or see the \"greylistd-setup-exim4(8)\" manual page.  One suggested option "
+"for the \"add\" command is \"-netmask=24\"."
+msgstr ""
+"使い方についてのさらなるオプションとヘルプは、引数なしでコマンドを実行する"
+"か、\"greylistd-setup-exim4(8)\" マニュアルページを参照してください。\"add\" "
+"コマンドへのお勧めのオプションの一つは \"-netmask=24\" です。"
+
+#. Type: note
+#. Description
+#: ../templates:13
+msgid ""
+"The reason this operation is not performed automatically is that Exim's "
+"configuration files are tagged as \"conffiles\", so per Debian Policy they "
+"are completely under your control.  Only you can change them."
+msgstr ""
+"この動作が移動的には実行されない理由は、Exim の設定ファイルは \"conffiles\" "
+"とされており、Debian ポリシーによれば全てユーザが管理するものとされています。"
+"あなただけが変更できるのです。"
+
+#. Type: note
+#. Description
+#: ../templates:13
+msgid ""
+"If you prefer to configure Exim 4 for greylistd by hand, please see /usr/"
+"share/doc/greylistd/README.Debian."
+msgstr ""
+"Exim 4 を 手動で greylistd 向けに設定したい場合には、/usr/share/doc/"
+"greylistd/README.Debian を参照してください。"
+
+#. Type: note
+#. Description
+#: ../templates:40
+msgid "Your MTA needs additional configuration"
+msgstr "MTA には追加設定が必要です"
+
+#. Type: note
+#. Description
+#: ../templates:40
+msgid ""
+"For greylisting to become effective, two things must happen:\n"
+" - Your Mail Transport Agent (MTA) needs to talk to greylistd while\n"
+"   receiving incoming mail, and depending on the response, issue a\n"
+"   temporary rejection (451 SMTP response) to the remote host.\n"
+" - The account under which your MTA runs needs to be added to the\n"
+"   \"greylist\" group.  After this, your MTA needs to be restarted."
+msgstr ""
+"greylisting を有効にするには、2 つの事柄が前提です:\n"
+" - メール転送エージェント (MTA) が受信メールを受け取っている間、greylistd\n"
+"   と通信する必要があり、加えて応答に依存しているので、リモートホストへは\n"
+"   一時的な拒否 (451 SMTP コード) を返すようにしなければいけない。\n"
+" - MTA を動作させているアカウントは \"greylist\" グループに追加されなければ\n"
+"   いけない。この設定後、MTA は再起動が必要。"
+
+#. Type: note
+#. Description
+#: ../templates:40
+msgid ""
+"Unfortunately, this package supports only Debian's default Exim 4 "
+"configuration.  Since you seem to be using a different MTA, have a look at "
+"the greylistd(8) manual page for some information on communicating with "
+"greylistd."
+msgstr ""
+"残念なことに、このパッケージでは Debian の標準 Exim 4 に対する設定のみをサ"
+"ポートしています。他の MTA を使っているようですので、greylistd と通信するため"
+"の情報については greylistd(8) マニュアルページを参照して下さい。"
+
+#. Type: note
+#. Description
+#: ../templates:40
+msgid ""
+"There may also be other greylisting solutions available that suit your MTA "
+"better; see the \"Links\" section at:\n"
+"   http://projects.puremagic.com/greylisting/"
+msgstr ""
+"あなたの使っている MTA により適している、利用可能な他の greylisting ソリュー"
+"ションがあるかもしれません。以下の \"Links\" セクションを参照してください:\n"
+"   http://projects.puremagic.com/greylisting/"

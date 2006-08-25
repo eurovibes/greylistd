@@ -78,6 +78,23 @@ exim4conf_texts = {
                                   $local_part@$domain}\\
                                  {5s}{}{false}}
 
+ # Deny if blacklisted by greylist
+ deny
+   message = $sender_host_address is blacklisted from delivering \\
+                     mail from <$sender_address> to <$local_part@$domain>.
+   log_message = blacklisted.
+   !senders        = :
+   !authenticated = *
+   verify         = recipient/callout=20s,use_sender,defer_ok
+   condition      = ${readsocket{/var/run/greylistd/socket}\\
+                                 {--black \\
+                                  $sender_host_address \\
+                                  $sender_address \\
+                                  $local_part@$domain}\\
+                                 {5s}{}{false}}
+
+
+
 ''',
 
     "data" : '''  # greylistd(8) configuration follows.
@@ -115,6 +132,20 @@ exim4conf_texts = {
                                   %s \\
                                   $recipients}\\
                                   {5s}{}{false}}
+
+ # Deny if blacklisted by greylist
+ deny
+   message = $sender_host_address is blacklisted from delivering \\
+                     mail from <$sender_address> to <$recipients>.
+   log_message = blacklisted.
+   !senders        = :
+   !authenticated = *
+   condition      = ${readsocket{/var/run/greylistd/socket}\\
+                                 {--black \\
+                                  $sender_host_address \\
+                                  $recipients}\\
+                                  {5s}{}{false}}
+
 
 '''
     }

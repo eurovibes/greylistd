@@ -2,12 +2,13 @@ Source: greylistd
 Section: mail
 Priority: optional
 Maintainer: Tor Slettnes <tor@slett.net>
-Build-Depends: debhelper (>= 4.1.16)
-Standards-Version: 3.6.1
+Build-Depends: debhelper (>= 5.0.37.2)
+Build-Depends-Indep: python
+Standards-Version: 3.7.2
 
 Package: greylistd
 Architecture: all
-Depends: python (>= 2.3), ${misc:Depends}
+Depends: ${python:Depends}, ${misc:Depends}, adduser
 Recommends: exim4
 Description: Greylisting daemon for use with Exim 4
  This daemon provides a simple greylisting implementation for use with
