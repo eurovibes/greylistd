@@ -104,13 +104,13 @@ do_configure()
 	adduser --system --group --disabled-password \
 	    --home "$datadir" --no-create-home "$username"
 
-
     ### If we are using Exim 4, and the Debian-exim user is not in the
     ### group, add it and then restart Exim.
+    restart_exim=no
     if running_exim4 && add_user Debian-exim "$groupname"
     then
         db_get "$owner/restartexim"
-	$RET && invoke-rc.d exim4 restart
+	$RET && restart_exim=yes
 
     ### Otherwise, if we are updating from 0.7 or prior versions, we add
     ### the greylist user from the "ugid" DebConf setting
@@ -120,6 +120,9 @@ do_configure()
 	add_user "$uid" "$groupname" || true
 
     fi
+
+    db_stop || true
+    [ "$restart_exim" != 'no' ] && invoke-rc.d exim4 restart
 
     ### Create working directories
     for dir in "$datadir" "$rundir"
