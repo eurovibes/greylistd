@@ -5,8 +5,8 @@
 
 [timeouts]
 # Initial delay before previously unknown triplets are allowed to pass
-# Default is 1 hour = 3600 seconds
-retryMin     = 3600
+# Default is 1 hour = 600 seconds
+retryMin     = 600
 
 # Lifetime of triplets that have not been retried after initial delay
 # Default is 8 hours = 28800 seconds

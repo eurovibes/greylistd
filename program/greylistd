@@ -29,7 +29,7 @@
 ########################################################################
 
 from time         import time, ctime, localtime, strftime
-from socket       import socket, AF_UNIX, SOCK_STREAM, error as SocketError
+from socket       import socket, AF_UNIX, SOCK_STREAM, error as SocketError, gethostname
 from os           import remove, rename, chmod, chown, getuid, getpid, isatty
 from pwd          import getpwnam
 from grp          import getgrnam
@@ -536,6 +536,25 @@ def do_stats ():
                     (str(expiredGrey).rjust(digits),
                      100.0 * expiredGrey / previousGrey))
 
+    text.append('')
+    return "\n".join(text)
+
+
+
+def do_mrtg ():
+    text      = []
+    now       = int(time())
+    stats     = data[STATS]
+    starttime = stats.get(START, None)
+    expireKeys(now)
+
+
+    text.append(str(stats[GREY]))
+    text.append(str(stats[WHITE]))
+
+    text.append(duration(now - starttime))
+    text.append(gethostname())
+    
     text.append('')
     return "\n".join(text)
 

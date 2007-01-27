@@ -45,7 +45,7 @@ sockfile = "/var/run/greylistd/socket"
 ### Commands that can be given over the socket
 commands = ("add", "delete", "check", "update",
             "stats", "list",  "clear", "save",
-            "reload")
+            "reload", "mrtg")
             
 
 
@@ -77,6 +77,9 @@ def usage (progname, message=None):
         "",
         "  stats",
         "    Show some general list statistics.",
+        "",
+        "  mrtg",
+        "    Show grey and white list statistics in a format that MRTG can use directly.",
         "",
         "  list [--white] [--grey] [--black]",
         "    Show all data items in the specified list(s).",
