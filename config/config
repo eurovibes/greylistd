@@ -5,7 +5,7 @@
 
 [timeouts]
 # Initial delay before previously unknown triplets are allowed to pass
-# Default is 1 hour = 600 seconds
+# Default is 10 minutes = 600 seconds
 retryMin     = 600
 
 # Lifetime of triplets that have not been retried after initial delay
@@ -45,3 +45,14 @@ tripletfile  = /var/lib/greylistd/triplets
 # Whether or not to retain unhashed triplets, for the "list" command.
 # Default is "true"
 savetriplets = true
+
+# Whether check/update also checks for an whitelist entry, which only
+# contains the first word of the triplet, that is the IP address usually.
+# If set to true, you can also insert general IP addresses/networks into the
+# whitelist, without email addresses.
+singlecheck = false
+
+# Whether update only inserts the first word of the triplet into the
+# whitelist, that is the IP address usually. Meant to be used in
+# conjunction with singlecheck = true.
+singleupdate = false

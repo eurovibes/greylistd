@@ -12,6 +12,7 @@
 ###             on prior knowledge of said identifier.
 ###
 ### Copyright (C) 2004, Tor Slettnes <tor@slett.net>
+###               2006, Sven Anderson <sven(at)anderson.de>
 ###
 ### This program is free software; you can redistribute it and/or modify
 ### it under the terms of the GNU General Public License as published by
@@ -48,8 +49,10 @@ if PyVersion < "2.3":
 
 
 ### Configuration file sections, items
-(DATA, STATEFILE, TRIPLETFILE, SAVETRIPLETS, UPDATEINTERVAL) = (
-    "data", "statefile", "tripletfile", "savetriplets", "update" )
+(DATA, STATEFILE, TRIPLETFILE, SAVETRIPLETS, UPDATEINTERVAL,
+    SINGLECHECK, SINGLEUPDATE ) = (
+    "data", "statefile", "tripletfile", "savetriplets", "update",
+    "singlecheck", "singleupdate" )
 
 (SOCKET, SOCKPATH, SOCKOWNER, SOCKMODE) = (
     "socket", "path", "owner", "mode")
@@ -64,6 +67,8 @@ conffile   = "/etc/greylistd/config"
 config     = { DATA       : { STATEFILE      : "/var/lib/greylistd/states",
                               TRIPLETFILE    : "/var/lib/greylistd/triplets",
                               SAVETRIPLETS   : True,
+                              SINGLECHECK    : False,
+                              SINGLEUPDATE   : False,
                               UPDATEINTERVAL : 300 },
 
                SOCKET     : { SOCKPATH       : "/var/run/greylistd/socket",
@@ -447,7 +452,7 @@ def do_delete (options, key):
         raise CommandError, "Not found"
 
 
-def do_check (options, key, update=False):
+def do_check (options, args, update=False):
     if options:
         truthtest = options[0]
         if not truthtest in datatypes:
@@ -457,14 +462,29 @@ def do_check (options, key, update=False):
 
     now       = int(time())
     expireKeys(now)
-    state     = listStatus(key)
+    state = None
+
+    if config[DATA][SINGLECHECK]:
+        key = hash(args[0])
+        state     = listStatus(key)
+
+    if state is None:
+        key = hash(" ".join(args))
+        state     = listStatus(key)
 
     if state is None:
         state = GREY
+        if update and config[DATA][TRIPLETFILE] and config[DATA][SAVETRIPLETS]:
+            newTriplets[key] = " ".join(args).lower()
 
     elif ((state == GREY) and 
           (data[GREY][key][IDX_FIRST] + config[TIMEOUTS][RETRYMIN] < now)):
         state = WHITE
+        if update and config[DATA][SINGLEUPDATE]:
+            do_delete(None, key)
+            key = hash(args[0])
+            if config[DATA][TRIPLETFILE] and config[DATA][SAVETRIPLETS]:
+                newTriplets[key] = args[0]
 
     if update:
         do_add([ state ], key)
@@ -476,8 +496,8 @@ def do_check (options, key, update=False):
 
 
 
-def do_update (options, key):
-    return do_check(options, key, update=True)
+def do_update (options, args):
+    return do_check(options, args, update=True)
 
 
 
