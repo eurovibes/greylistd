@@ -1,3 +1,11 @@
+greylistd (0.8.3.5) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Add nl translation (Closes: #418401)
+  * Add it translation (Closes: #413382)
+
+ -- Julien Danjou <acid@debian.org>  Thu, 12 Apr 2007 15:51:23 +0200
+
 greylistd (0.8.3.4) unstable; urgency=low
 
   * Non-maintainer upload.
@@ -157,7 +165,7 @@ greylistd (0.6.3) unstable; urgency=low
     for each data set.  Closes: #268059.
   * Greylist data is saved to temporary file, then renamed.
     This prevents a race condition where all data can be lost in case
-    of a power failure or a full filesystem.  Closes #285343.
+    of a power failure or a full filesystem.  Closes: #285343.
     (Data is saved periodically as of version 0.6).
   * Restructured runCommand() routine - it no longer walks through
     a large "if ... elif ... elif ... else" block, but tries to invoke

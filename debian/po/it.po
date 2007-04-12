@@ -1,0 +1,172 @@
+# Italian (it) translation of debconf templates for greylistd
+# Copyright (C) 2007 Software in the Public Interest
+# This file is distributed under the same license as the greylistd package.
+# Luca Monducci <luca.mo@tiscali.it>, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: greylistd 0.8.3.4 italian debconf templates\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-02-17 04:31+0100\n"
+"PO-Revision-Date: 2007-03-04 11:05+0100\n"
+"Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../templates:1001
+msgid "Restart Exim after adding it to the greylist group?"
+msgstr "Riavviare Exim dopo averlo aggiunto al gruppo greylist?"
+
+#. Type: boolean
+#. Description
+#: ../templates:1001
+msgid "You are using Exim 4 as your Mail Transport Agent (MTA).  Great!"
+msgstr "Si utilizza Exim 4 come Mail Transport Agent (MTA). Bene!"
+
+#. Type: boolean
+#. Description
+#: ../templates:1001
+msgid ""
+"The \"Debian-exim\" user will be added to the \"greylist\" group, so that "
+"the Exim daemon process can talk to greylistd.  However, for this change to "
+"take effect, the process must also be restarted."
+msgstr ""
+"L'utente \"Debian-exim\" viene aggiunto al gruppo \"greylist\", in modo da "
+"consentire al demone Exim di comunicare con greylistd. Purtroppo, per "
+"rendere effettiva questa modifica, è necessario riavviare il processo."
+
+#. Type: note
+#. Description
+#: ../templates:2001
+msgid "Exim 4 needs additional configuration"
+msgstr "È necessario modificare la configurazione di Exim 4"
+
+#. Type: note
+#. Description
+#: ../templates:2001
+msgid ""
+"For greylisting to become effective, your Mail Transport Agent (MTA) needs "
+"to talk to greylistd while receiving incoming mail; and depending on the "
+"response, issue a temporary rejection (451 SMTP code) to the remote host."
+msgstr ""
+"Per rendere efficace il greylisting è necessario che quando il proprio Mail "
+"Transport Agent (MTA) riceve un email possa comunicare con greylistd, e in "
+"base alla risposta, respingere temporaneamente il messaggio (risposta SMTP "
+"451) verso la macchine remota."
+
+#. Type: note
+#. Description
+#: ../templates:2001
+msgid ""
+"Since you are using Exim 4 as your MTA, a script is available for you to "
+"perform this task.  At a root prompt, type:\n"
+" # greylistd-setup-exim4 add\n"
+"If you overwrite your Exim configuration files in the future (for instance, "
+"when upgrading Exim), you may need to re-run this command."
+msgstr ""
+"Poiché si utilizza Exim 4 come MTA, è disponibile uno script che effettua "
+"questa operazione. Da root eseguire:\n"
+" # greylistd-setup-exim4 add\n"
+"Se in futuro si sovrascrivono i file di configurazione di Exim (per esempio "
+"quando si aggiorna Exim), potrebbe essere necessario rieseguire nuovamente "
+"questo comando."
+
+#. Type: note
+#. Description
+#: ../templates:2001
+msgid ""
+"Later, before you uninstall \"greylistd\", you want to run:\n"
+" # greylistd-setup-exim4 remove"
+msgstr ""
+"In seguito, prima di disinstallare \"greylistd\", si deve eseguire:\n"
+" # greylistd-setup-exim4 remove"
+
+#. Type: note
+#. Description
+#: ../templates:2001
+msgid ""
+"For more options and help on usage, run the command without any arguments, "
+"or see the \"greylistd-setup-exim4(8)\" manual page.  One suggested option "
+"for the \"add\" command is \"-netmask=24\"."
+msgstr ""
+"Per le altre opzioni e l'aiuto su come usarlo, eseguire il comando senza "
+"parametri oppure si veda la pagina man  di \"greylistd-setup-exim4(8)\". Una "
+"delle opzioni suggerite per il comando \"add\" è \"-netmask=24\"."
+
+#. Type: note
+#. Description
+#: ../templates:2001
+msgid ""
+"The reason this operation is not performed automatically is that Exim's "
+"configuration files are tagged as \"conffiles\", so per Debian Policy they "
+"are completely under your control.  Only you can change them."
+msgstr ""
+"La ragione per la quale questa operazione non è effettuata automaticamente è "
+"che il file di configurazione di Exim è marcato come un \"conffiles\" e "
+"quindi, in base alla policy Debian, è completamente sotto la responsabilità "
+"dell'utente. Solo l'utente può modificarlo."
+
+#. Type: note
+#. Description
+#: ../templates:2001
+msgid ""
+"If you prefer to configure Exim 4 for greylistd by hand, please see /usr/"
+"share/doc/greylistd/README.Debian."
+msgstr ""
+"Se si preferisce configurare manualmente Exim 4 per greylistd, si veda "
+"/usr/share/doc/greylistd/README.Debian."
+
+#. Type: note
+#. Description
+#: ../templates:3001
+msgid "Your MTA needs additional configuration"
+msgstr "È necessario modificare la configurazione del MTA"
+
+#. Type: note
+#. Description
+#: ../templates:3001
+msgid ""
+"For greylisting to become effective, two things must happen:\n"
+" - Your Mail Transport Agent (MTA) needs to talk to greylistd while\n"
+"   receiving incoming mail, and depending on the response, issue a\n"
+"   temporary rejection (451 SMTP response) to the remote host.\n"
+" - The account under which your MTA runs needs to be added to the\n"
+"   \"greylist\" group.  After this, your MTA needs to be restarted."
+msgstr ""
+"Per far funzionare il greylisting si devono verificare due cose:\n"
+" - Al momento della ricezione di un email il proprio Mail Transfer\n"
+"   Agent (MTA) deve poter comunicare con greylistd e, in base alla\n"
+"   risposta, respingere temporaneamente il messaggio (risposta SMTP\n"
+"   451) verso la macchine remota.\n"
+" - L'account con il quale è in esecuzione l'MTA deve appartenere al\n"
+"   gruppo \"greylist\". Infine è necessario riavviare l'MTA."
+
+#. Type: note
+#. Description
+#: ../templates:3001
+msgid ""
+"Unfortunately, this package supports only Debian's default Exim 4 "
+"configuration.  Since you seem to be using a different MTA, have a look at "
+"the greylistd(8) manual page for some information on communicating with "
+"greylistd."
+msgstr ""
+"Sfortunatamente questo pacchetto supporta solo la configurazione di Exim 4, "
+"l'MTA predefinito in Debian. Poiché è in uso un MTA diverso si deve "
+"consultare la pagina man di greylistd(8) per ulteriori informazioni su come "
+"comunicare con greylistd."
+
+#. Type: note
+#. Description
+#: ../templates:3001
+msgid ""
+"There may also be other greylisting solutions available that suit your MTA "
+"better; see the \"Links\" section at:\n"
+"   http://projects.puremagic.com/greylisting/"
+msgstr ""
+"Potrebbero esistere altre soluzioni per il greylisting che si integrano "
+"meglio con il proprio MTA; si veda la sezione \"Links\" in:\n"
+"   http://projects.puremagic.com/greylisting/"
