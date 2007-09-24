@@ -1,7 +1,7 @@
 Source: greylistd
 Section: mail
 Priority: optional
-Maintainer: Tor Slettnes <tor@slett.net>
+Maintainer: Julien Danjou <acid@debian.org>
 Build-Depends: debhelper (>= 5.0.37.2), python-support (>= 0.3)
 Build-Depends-Indep: python
 Standards-Version: 3.7.2

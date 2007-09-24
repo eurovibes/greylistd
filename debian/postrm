@@ -33,8 +33,12 @@ case "$1" in
 
 	if id -u greylist >/dev/null 2>&1
 	then
-	    deluser --system greylist
-	    delgroup --system greylist >/dev/null 2>&1 || true
+                if [ -x "$(command -v deluser)" ]; then
+  	            deluser --system greylist
+                    delgroup --system greylist >/dev/null 2>&1 || true
+                else
+                    echo >&2 "not removing greylist system account because deluser command was not found"
+                fi
 	fi
 	;;
 

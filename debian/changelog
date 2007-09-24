@@ -1,3 +1,13 @@
+greylistd (0.8.4) unstable; urgency=low
+
+  * The "Oh this Kingdom is mine!" release
+  * I'm declaring myself as maintainer (Closes: #384612)
+  * Test for deluser presence before deleting the greylist user (Closes: #431516)
+  * Add pt translation (Closes: #436754)
+  * Add es translation (Closes: #426173)
+
+ -- Julien Danjou <acid@debian.org>  Mon, 24 Sep 2007 21:15:50 +0200
+
 greylistd (0.8.3.5) unstable; urgency=low
 
   * Non-maintainer upload.
