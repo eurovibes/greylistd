@@ -1,3 +1,10 @@
+greylistd (0.8.6) unstable; urgency=low
+
+  * Change acl_whitelist_local_deny to acl_local_deny_exceptions
+    for exim4 >= 4.68 (Closes: #452163)
+
+ -- Julien Danjou <acid@debian.org>  Sun, 02 Dec 2007 16:50:37 +0100
+
 greylistd (0.8.5) unstable; urgency=low
 
   * Make sure /var/run/greylistd exists in init.d

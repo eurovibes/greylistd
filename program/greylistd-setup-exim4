@@ -68,7 +68,7 @@ exim4conf_texts = {
                      ${if exists {/var/lib/greylistd/whitelist-hosts}\\
                                  {/var/lib/greylistd/whitelist-hosts}{}}
     !authenticated = *
-    !acl           = acl_whitelist_local_deny
+    !acl           = acl_local_deny_exceptions
     domains        = +local_domains : +relay_to_domains
     verify         = recipient/callout=20s,use_sender,defer_ok
     condition      = ${readsocket{/var/run/greylistd/socket}\\
@@ -126,7 +126,7 @@ exim4conf_texts = {
                      ${if exists {/var/lib/greylistd/whitelist-hosts}\\
                                  {/var/lib/greylistd/whitelist-hosts}{}}
     !authenticated = *
-    !acl           = acl_whitelist_local_deny
+    !acl           = acl_local_deny_exceptions
     condition      = ${readsocket{/var/run/greylistd/socket}\\
                                  {--grey \\
                                   %s \\
