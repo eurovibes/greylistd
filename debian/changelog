@@ -1,3 +1,27 @@
+greylistd (0.8.7) unstable; urgency=low
+
+  * Declaring myself as maintainer
+  * My first ever Debian package
+  * Applied patch from myself to fix bug: Singleupdate option is
+    broken (Closes: #480365)
+  * Applied patch from Alexander Gordienko to fix bug: network ranges
+    in whitelist-hosts don't work (Closes: #311652)
+  * Simplified whitelist-hosts, because now we can say /12
+  * Bump Standards-version to 3.7.3
+  * Shorten long description
+
+ -- Matthew Wakeling <matthew@wakeling.homeip.net>  Wed, 11 Jun 2008 13:50:51 +0100
+
+greylistd (0.8.6-0.1) unstable; urgency=low
+
+  * Non-maintainer upload acknowledged by maintainer.
+  * Applied patch from Petter Reinholdtsen which add LSB dependency info
+    to init.d-script. (Closes: #460151)
+  * Applied patch from David L. Anselmi which fixes a syntax error in
+    exim4-acl-example.txt. (Closes: #400089)
+
+ -- Morten Werner Forsbring <werner@debian.org>  Mon, 25 Feb 2008 12:40:48 +0100
+
 greylistd (0.8.6) unstable; urgency=low
 
   * Change acl_whitelist_local_deny to acl_local_deny_exceptions

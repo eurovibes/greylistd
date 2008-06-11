@@ -1,10 +1,10 @@
 Source: greylistd
 Section: mail
 Priority: optional
-Maintainer: Julien Danjou <acid@debian.org>
+Maintainer: Matthew Wakeling <matthew@wakeling.homeip.net>
 Build-Depends: debhelper (>= 5.0.37.2), python-support (>= 0.3)
 Build-Depends-Indep: python
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
 
 Package: greylistd
 Architecture: all
@@ -14,25 +14,8 @@ Description: Greylisting daemon for use with Exim 4
  This daemon provides a simple greylisting implementation for use with
  the Exim Mail Transport Agent (MTA), version 4.
  .
- Greylisting is a simple but highly effective means to weed out messages that
- are being delivered via spamware/ratware tools.  The idea is to establish
- whether a prior relationship exists between the sender and the receiver of a
- message.  Most of the time it does, and the delivery proceeds normally.
- .
- On the other hand, if no prior relationship exists, the delivery is 
- temporarily rejected.  Legitimate MTAs will treat this response accordingly,
- and retry the delivery in a while.  In contrast, ratware will usually fail
- to retry the delivery in a normal fashion.  As a result, greylisting is
- currently more than 90% effective in blocking incoming junk mail, while
- nearly all legitimate mail goes through.  For more information, see Evan
- Harris' whitepaper at:
-   http://projects.puremagic.com/greylisting/
- .
- This daemon listens for sender and recipient data on a UNIX domain socket.
- Your MTA would query the daemon during the incoming SMTP transaction, and 
- accept or defer the incoming message depending on its response.
- .
- This package contains a script to configure support for greylisting in
- Exim 4.  It may be possible to use greylistd with other MTAs as well, though
- some work will probably be involved.  Postfix users may want to check out
- the "postgrey" package instead of this one.
+ Once installed, you will need to configure your MTA to query the
+ greylistd server.  This package contains a script to automatically
+ configure Exim 4. It may be possible to use greylistd with other MTAs
+ as well. Postfix users may want to check out the "postgrey" package
+ instead of this one.

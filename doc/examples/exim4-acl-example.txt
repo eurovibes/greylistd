@@ -68,8 +68,8 @@ expansion, as follows:
 
     condition   = ${if eq {grey}\
                           {${readsocket{/var/run/greylistd/socket}\
-                                       {${mask:$sender_host_address/24}\
-                                        $sender_address\
+                                       {${mask:$sender_host_address/24} \
+                                        $sender_address \
                                         $local_part@$domain}\
                                        {5s}{}{}}}\
                     {true}{false}}
