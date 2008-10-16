@@ -1,3 +1,14 @@
+greylistd (0.8.7+nmu1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix pending l10n issues. Debconf translations:
+    - Swedish. Closes: #492066
+    - Brazilian Portuguese. Closes: #501753
+    - Basque. Closes: #502185
+    - Russian. Closes: #502334
+
+ -- Christian Perrier <bubulle@debian.org>  Thu, 16 Oct 2008 19:50:11 +0200
+
 greylistd (0.8.7) unstable; urgency=low
 
   * Declaring myself as maintainer

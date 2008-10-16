@@ -14,8 +14,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: greylistd\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-17 16:10-0800\n"
+"Report-Msgid-Bugs-To: greylistd@packages.debian.org\n"
+"POT-Creation-Date: 2008-10-10 18:02+0200\n"
 "PO-Revision-Date: 2005-05-23 21:18+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -25,37 +25,37 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:4
+#: ../templates:1001
 msgid "Restart Exim after adding it to the greylist group?"
 msgstr "Restartovat Exim po přidání do skupiny greylist?"
 
 #. Type: boolean
 #. Description
-#: ../templates:4
+#: ../templates:1001
 msgid "You are using Exim 4 as your Mail Transport Agent (MTA).  Great!"
 msgstr "Jako svůj poštovní server používáte Exim4. Výborně!"
 
 #. Type: boolean
 #. Description
-#: ../templates:4
+#: ../templates:1001
 msgid ""
 "The \"Debian-exim\" user will be added to the \"greylist\" group, so that "
 "the Exim daemon process can talk to greylistd.  However, for this change to "
 "take effect, the process must also be restarted."
 msgstr ""
 "Aby mohl daemon Exim komunikovat s daemonem greylistd, přidám uživatele "
-"\"Debian-exim\" do skupiny \"greylist\". Aby se tato změna projevila, musí se "
-"daemon restartovat."
+"\"Debian-exim\" do skupiny \"greylist\". Aby se tato změna projevila, musí "
+"se daemon restartovat."
 
 #. Type: note
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid "Exim 4 needs additional configuration"
 msgstr "Exim4 vyžaduje dodatečné nastavení"
 
 #. Type: note
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid ""
 "For greylisting to become effective, your Mail Transport Agent (MTA) needs "
 "to talk to greylistd while receiving incoming mail; and depending on the "
@@ -68,7 +68,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid ""
 "Since you are using Exim 4 as your MTA, a script is available for you to "
 "perform this task.  At a root prompt, type:\n"
@@ -76,15 +76,15 @@ msgid ""
 "If you overwrite your Exim configuration files in the future (for instance, "
 "when upgrading Exim), you may need to re-run this command."
 msgstr ""
-"Protože je vaším MTA Exim4, může toto nastavení provést skript. V "
-"příkazovém řádku pod uživatelem root napište:\n"
+"Protože je vaším MTA Exim4, může toto nastavení provést skript. V příkazovém "
+"řádku pod uživatelem root napište:\n"
 " # greylistd-setup-exim4 add\n"
 "Pokud si později přepíšete konfigurační soubory Eximu (například při "
 "přechodu na novější verzi), budete možná muset spustit příkaz znovu."
 
 #. Type: note
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid ""
 "Later, before you uninstall \"greylistd\", you want to run:\n"
 " # greylistd-setup-exim4 remove"
@@ -94,7 +94,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid ""
 "For more options and help on usage, run the command without any arguments, "
 "or see the \"greylistd-setup-exim4(8)\" manual page.  One suggested option "
@@ -106,7 +106,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid ""
 "The reason this operation is not performed automatically is that Exim's "
 "configuration files are tagged as \"conffiles\", so per Debian Policy they "
@@ -118,7 +118,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid ""
 "If you prefer to configure Exim 4 for greylistd by hand, please see /usr/"
 "share/doc/greylistd/README.Debian."
@@ -128,13 +128,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:40
+#: ../templates:3001
 msgid "Your MTA needs additional configuration"
 msgstr "Váš poštovní server vyžaduje dodatečné nastavení"
 
 #. Type: note
 #. Description
-#: ../templates:40
+#: ../templates:3001
 msgid ""
 "For greylisting to become effective, two things must happen:\n"
 " - Your Mail Transport Agent (MTA) needs to talk to greylistd while\n"
@@ -152,7 +152,7 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:40
+#: ../templates:3001
 msgid ""
 "Unfortunately, this package supports only Debian's default Exim 4 "
 "configuration.  Since you seem to be using a different MTA, have a look at "
@@ -160,17 +160,17 @@ msgid ""
 "greylistd."
 msgstr ""
 "Tento balík podporuje pouze konfiguraci Eximu 4. Protože se zdá, že "
-"používáte jiný poštovní server, podívejte se do manuálové stránky "
-"greylistd(8), kde naleznete informace o komunikaci s daemonem greylistd."
+"používáte jiný poštovní server, podívejte se do manuálové stránky greylistd"
+"(8), kde naleznete informace o komunikaci s daemonem greylistd."
 
 #. Type: note
 #. Description
-#: ../templates:40
+#: ../templates:3001
 msgid ""
 "There may also be other greylisting solutions available that suit your MTA "
 "better; see the \"Links\" section at:\n"
 "   http://projects.puremagic.com/greylisting/"
 msgstr ""
 "Také je možné, že pro váš poštovní server existují vhodnější greylistingová "
-"řešení -- podívejte se do části \"Links\" na stránce "
-"http://projects.puremagic.com/greylisting/."
+"řešení -- podívejte se do části \"Links\" na stránce http://projects."
+"puremagic.com/greylisting/."

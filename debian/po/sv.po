@@ -1,32 +1,35 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# translation of greylistd_0.8.7_sv.po to Swedish
+# greylistd.
+# Copyright (C) 2008
+# This file is distributed under the same license as the greylistd package.
 #
-#, fuzzy
+# Martin Ågren <martin.agren@gmail.com>, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: greylistd_0.8.7_sv\n"
 "Report-Msgid-Bugs-To: greylistd@packages.debian.org\n"
 "POT-Creation-Date: 2008-10-10 18:02+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2008-07-23 18:00+0200\n"
+"Last-Translator: Martin Ågren <martin.agren@gmail.com>\n"
+"Language-Team: Swedish <debian-l10n-swedish@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #. Type: boolean
 #. Description
 #: ../templates:1001
 msgid "Restart Exim after adding it to the greylist group?"
-msgstr ""
+msgstr "Starta om Exim efter att ha lagt till det i gruppen greylist?"
 
 #. Type: boolean
 #. Description
 #: ../templates:1001
 msgid "You are using Exim 4 as your Mail Transport Agent (MTA).  Great!"
 msgstr ""
+"Du använder Exim 4 som leveransagent för elektronisk post (MTA). Utmärkt!"
 
 #. Type: boolean
 #. Description
@@ -36,12 +39,15 @@ msgid ""
 "the Exim daemon process can talk to greylistd.  However, for this change to "
 "take effect, the process must also be restarted."
 msgstr ""
+"Användaren \"Debian-exim\" kommer läggas till gruppen \"greylist\", så att "
+"Exims demonprocess kan tala med greylistd.  För att denna förändring ska få "
+"effekt måste dock processen startas om."
 
 #. Type: note
 #. Description
 #: ../templates:2001
 msgid "Exim 4 needs additional configuration"
-msgstr ""
+msgstr "Exim 4 kräver ytterligare konfiguration"
 
 #. Type: note
 #. Description
@@ -51,6 +57,9 @@ msgid ""
 "to talk to greylistd while receiving incoming mail; and depending on the "
 "response, issue a temporary rejection (451 SMTP code) to the remote host."
 msgstr ""
+"För en effektiv grålistning, måste din leveransagent för elektronisk post "
+"(MTA) tala till greylistd medan inkommande post tas emot och, beroende på "
+"svaret, avge en temporär avvisning (SMTP-kod 451) till fjärrvärden."
 
 #. Type: note
 #. Description
@@ -62,6 +71,11 @@ msgid ""
 "If you overwrite your Exim configuration files in the future (for instance, "
 "when upgrading Exim), you may need to re-run this command."
 msgstr ""
+"Eftersom du använder Exim 4 som MTA, finns ett skript tillgängligt för att "
+"utföra denna operation.  Skriv i en rootprompt:\n"
+" # greylistd-setup-exim4 add\n"
+"Om du skriver över din konfigurationsfil för Exim i framtiden (till exempel "
+"vid uppgradering av Exim), kan du behöva köra detta kommando igen."
 
 #. Type: note
 #. Description
@@ -70,6 +84,8 @@ msgid ""
 "Later, before you uninstall \"greylistd\", you want to run:\n"
 " # greylistd-setup-exim4 remove"
 msgstr ""
+"Senare, innan du avinstallerar \"greylistd\", behöver du köra:\n"
+" # greylistd-setup-exim4 remove"
 
 #. Type: note
 #. Description
@@ -79,6 +95,9 @@ msgid ""
 "or see the \"greylistd-setup-exim4(8)\" manual page.  One suggested option "
 "for the \"add\" command is \"-netmask=24\"."
 msgstr ""
+"För fler val och användningshjälp, kör kommandot utan några argument eller "
+"se manualsidan för \"greylistd-setpu-exim4(8)\".  Ett rekommenderat val för "
+"\"add\"-kommandot är \"-netmask=24\"."
 
 #. Type: note
 #. Description
@@ -88,6 +107,9 @@ msgid ""
 "configuration files are tagged as \"conffiles\", so per Debian Policy they "
 "are completely under your control.  Only you can change them."
 msgstr ""
+"Anledningen till att denna operation inte utförs automatiskt är att Exims "
+"konfigurationsfiler betecknas som \"conffiler\" så enligt Debians policy är "
+"de helt under din kontroll. Endast du kan ändra dem."
 
 #. Type: note
 #. Description
@@ -96,12 +118,14 @@ msgid ""
 "If you prefer to configure Exim 4 for greylistd by hand, please see /usr/"
 "share/doc/greylistd/README.Debian."
 msgstr ""
+"Om du föredrar att konfigurera Exim 4 för greylistd manuellt, var vänlig se /"
+"usr/share/doc/greylistd/README.Debian."
 
 #. Type: note
 #. Description
 #: ../templates:3001
 msgid "Your MTA needs additional configuration"
-msgstr ""
+msgstr "Din MTA behöver ytterligare konfiguration"
 
 #. Type: note
 #. Description
@@ -114,6 +138,13 @@ msgid ""
 " - The account under which your MTA runs needs to be added to the\n"
 "   \"greylist\" group.  After this, your MTA needs to be restarted."
 msgstr ""
+"För en effektiv grålistning krävs två saker:\n"
+" - Din leveransagent för elektronisk post (MTA) behöver tala med\n"
+"   greylistd medan inkommande post tas emot och, beroende på\n"
+"   svaret, avge en tillfällig avvisning (SMTP-svar 451)\n"
+"   till fjärrvärden.\n"
+" - Det konto som din MTA kör under behöver läggas till gruppen\n"
+"   \"greylist\".  Efter detta måste din MTA startas om."
 
 #. Type: note
 #. Description
@@ -124,6 +155,9 @@ msgid ""
 "the greylistd(8) manual page for some information on communicating with "
 "greylistd."
 msgstr ""
+"Olyckligtvis stöder detta paket enbart Debians standardkonfiguration med "
+"Exim 4. Eftersom du verkar använda en annan MTA, studera manualsidan för "
+"greylistd(8) för information om hur kommunikation sker med greylistd."
 
 #. Type: note
 #. Description
@@ -133,3 +167,6 @@ msgid ""
 "better; see the \"Links\" section at:\n"
 "   http://projects.puremagic.com/greylisting/"
 msgstr ""
+"Det kan också finnas andra grålistningslösningar tillgängliga som passar din "
+"MTA bättre; se avdelningen \"Links\" på:\n"
+"   http://projects.puremagic.com/greylisting/"

@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: greylistd\n"
-"Report-Msgid-Bugs-To: greylistd@bugs.debian.org\n"
-"POT-Creation-Date: 2006-10-19 00:44+0200\n"
+"Report-Msgid-Bugs-To: greylistd@packages.debian.org\n"
+"POT-Creation-Date: 2008-10-10 18:02+0200\n"
 "PO-Revision-Date: 2006-11-03 19:07+0100\n"
 "Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
 "Language-Team: de <debian-l10n-german@lists.debian.org>\n"
@@ -24,7 +24,7 @@ msgstr "Exim nach dem Hinzufügen zu der Greylist-Gruppe neu starten?"
 #. Description
 #: ../templates:1001
 msgid "You are using Exim 4 as your Mail Transport Agent (MTA).  Great!"
-msgstr "Sie verwenden Exim 4 als Ihr »Mail Transport Agent« (MTA). Super!" 
+msgstr "Sie verwenden Exim 4 als Ihr »Mail Transport Agent« (MTA). Super!"
 
 #. Type: boolean
 #. Description
@@ -36,8 +36,8 @@ msgid ""
 msgstr ""
 "Der »Debian-exim«-Benutzer wird zu der »greylist«-Gruppe hinzugefügt, so dass "
 "der Exim-Daemon-Prozess direkt mit Greylistd sprechen kann. Damit diese "
-"Änderung allerdings in Kraft treten kann, muss der Prozess auch neu gestartet "
-"werden."
+"Änderung allerdings in Kraft treten kann, muss der Prozess auch neu "
+"gestartet werden."
 
 #. Type: note
 #. Description
@@ -68,9 +68,9 @@ msgid ""
 "If you overwrite your Exim configuration files in the future (for instance, "
 "when upgrading Exim), you may need to re-run this command."
 msgstr ""
-"Da Sie Exim 4 als Ihren MTA verwenden, ist ein Skript für Sie vorhanden, dass "
-"diese Aufgabe erledigt. Tippen Sie an einer Eingabeaufforderung für root "
-"folgendes ein:\n"
+"Da Sie Exim 4 als Ihren MTA verwenden, ist ein Skript für Sie vorhanden, "
+"dass diese Aufgabe erledigt. Tippen Sie an einer Eingabeaufforderung für "
+"root folgendes ein:\n"
 " # greylistd-setup-exim4 add\n"
 "Falls Sie in der Zukunft Ihre Exim-Konfigurationsdateien überschreiben (zum "
 "Beispiel, wenn Sie ein Upgrade von Exim durchführen), müssen Sie eventuell "
@@ -95,9 +95,9 @@ msgid ""
 "or see the \"greylistd-setup-exim4(8)\" manual page.  One suggested option "
 "for the \"add\" command is \"-netmask=24\"."
 msgstr ""
-"Für weitere Optionen und Benutzungshilfe führen Sie den Befehl ohne Argumente "
-"aus oder lesen Sie die »greylistd-setup-exim4(8)«-Handbuchseite. Eine "
-"empfohlene Option für das »add«-Kommando ist »-netmask=24«."
+"Für weitere Optionen und Benutzungshilfe führen Sie den Befehl ohne "
+"Argumente aus oder lesen Sie die »greylistd-setup-exim4(8)«-Handbuchseite. "
+"Eine empfohlene Option für das »add«-Kommando ist »-netmask=24«."
 
 #. Type: note
 #. Description
@@ -158,8 +158,8 @@ msgid ""
 msgstr ""
 "Unglücklicherweise unterstützt dieses Paket nur Debians Exim 4 "
 "Standardkonfiguration. Da es scheint, dass Sie einen anderen MTA verwenden, "
-"schauen Sie in die greylistd(8)-Handbuchseite, um einige Informationen zu der "
-"Kommunikation mit Greylistd zu erhalten."
+"schauen Sie in die greylistd(8)-Handbuchseite, um einige Informationen zu "
+"der Kommunikation mit Greylistd zu erhalten."
 
 #. Type: note
 #. Description
