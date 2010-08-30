@@ -1,4 +1,3 @@
 usr/sbin
 etc/greylistd
 var/lib/greylistd
-var/run/greylistd

@@ -1,3 +1,14 @@
+greylistd (0.8.7+nmu2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Add missing recipient domains check in deny portion of Exim ACL,
+    and stop doing recipient callouts in defer and deny ACLs
+    (Closes: #591678, #464084)
+  * Fix lintian error: don't include /var/run/greylistd in package
+    (init script already creates it dynamically)
+
+ -- Dominic Hargreaves <dom@earth.li>  Mon, 30 Aug 2010 16:59:54 +0100
+
 greylistd (0.8.7+nmu1) unstable; urgency=low
 
   * Non-maintainer upload.

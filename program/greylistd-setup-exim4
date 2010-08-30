@@ -70,7 +70,7 @@ exim4conf_texts = {
     !authenticated = *
     !acl           = acl_local_deny_exceptions
     domains        = +local_domains : +relay_to_domains
-    verify         = recipient/callout=20s,use_sender,defer_ok
+    verify         = recipient
     condition      = ${readsocket{/var/run/greylistd/socket}\\
                                  {--grey \\
                                   %s \\
@@ -85,7 +85,8 @@ exim4conf_texts = {
    log_message = blacklisted.
    !senders        = :
    !authenticated = *
-   verify         = recipient/callout=20s,use_sender,defer_ok
+   domains        = +local_domains : +relay_to_domains
+   verify         = recipient
    condition      = ${readsocket{/var/run/greylistd/socket}\\
                                  {--black \\
                                   $sender_host_address \\
