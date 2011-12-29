@@ -1,3 +1,15 @@
+greylistd (0.8.8) unstable; urgency=low
+
+  * QA upload
+  * Set maintainer to QA group
+  * Fix pending l10n issues. Debconf translations:
+    - Danish (Joe Hansen).  Closes: #597771
+  * Modernize the package:
+    - Use 3.0 source format
+    - Use build-arch and build-indep targets in debian/rules
+
+ -- Christian Perrier <bubulle@debian.org>  Thu, 29 Dec 2011 22:35:39 +0100
+
 greylistd (0.8.7+nmu2) unstable; urgency=low
 
   * Non-maintainer upload.
