@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 # Post-installation script for greylistd.
 # see: dh_installdeb(1)
 #
@@ -12,6 +12,8 @@
 #          <conflicting-package> <version>
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
+
+set -e
 
 . /usr/share/debconf/confmodule                                         
 db_version 2.0

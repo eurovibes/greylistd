@@ -461,7 +461,10 @@ def do_check (options, args, update=False):
         truthtest = None
 
     now       = int(time())
-    expireKeys(now)
+    ### according to #375504 this call to expireKeys() can be
+    ### removed here, expiration takes place when periodically
+    ### saving to disk
+    ### #375504: expireKeys(now)
     state = None
 
     if config[DATA][SINGLECHECK]:

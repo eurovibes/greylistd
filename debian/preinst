@@ -1,4 +1,4 @@
-#! /bin/sh -e
+#! /bin/sh 
 # preinst script for #PACKAGE#
 #
 # see: dh_installdeb(1)
@@ -11,6 +11,8 @@
 #
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
+
+set -e
 
 set_config_value()
 {

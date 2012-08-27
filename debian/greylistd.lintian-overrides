@@ -1,0 +1,5 @@
+# These templates are used in the config script using a variable
+greylistd: unused-debconf-template greylistd/restartexim
+greylistd: unused-debconf-template greylistd/autoconfig_notdone_exim4
+greylistd: unused-debconf-template greylistd/autoconfig_notdone
+

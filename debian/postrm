@@ -1,4 +1,4 @@
-#! /bin/sh -e
+#! /bin/sh
 # postinst script for greylistd
 #
 # see: dh_installdeb(1)
@@ -8,6 +8,7 @@
 # the final step in the removal of this package, after the package's
 # conffiles have been removed.
 
+set -e
 
 case "$1" in
     remove|upgrade|abort-upgrade|failed-upgrade)

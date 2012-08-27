@@ -250,7 +250,9 @@ def exim4_configure (lines, aclname, options):
         try:
             netmask = int(options["netmask"])
         except:
-            raise "Invalid netmask size: '%s'"%options["netmask"]
+	    nmstring=options["netmask"]
+            raise RuntimeError("Invalid netmask size: '%(nmstring)s'"%vars())
+### org           raise "Invalid netmask size: '%s'"%options["netmask"]
 
         hostaddress="${mask:$sender_host_address/%s}"%options["netmask"]
 

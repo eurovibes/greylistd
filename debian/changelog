@@ -1,3 +1,21 @@
+greylistd (0.8.8.1) experimental; urgency=low
+
+  * new Maintainer (Closes:  #595693)
+  * debian/controL: standard bumped to 3.9.3 (no changes)
+  * debian/control: use dh 9
+  * debian/post*: use set -e in the body of the script
+  * debian/config: use set -e in the body
+  * debian/README.source: added
+  * debian/copyright: link to file with version
+  * debian/init: add description: line
+  * debian/init: provide greylistd in header
+  * debian/*.override: add override for unused-debconf-template
+  * program/greylistd: improvment for high traffic (Closes: #375504)
+  * program/greylistd-setup-exim4: replace string exception (Closes: #585231)
+  * change typo in man pages
+
+ -- Thorsten Alteholz <debian@alteholz.de>  Mon, 27 Aug 2012 18:00:00 +0200
+
 greylistd (0.8.8) unstable; urgency=low
 
   * QA upload
