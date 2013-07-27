@@ -39,6 +39,15 @@ case "$1" in
 	then
 	    set_config_value /etc/init.d/greylist UGID mail:mail
 	fi
+
+	### In version 0.8.8 the /etc/init.d/ file is called greylist.
+        ### Newer packages call this file greylistd, so manually remove
+        ### the old one.
+	if dpkg --compare-versions "$2" eq "0.8.8"
+	then
+	    echo "I: update-rc.d -f greylist remove"
+	    update-rc.d -f greylist remove
+	fi
     ;;
 
     install|abort-upgrade)

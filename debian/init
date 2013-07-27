@@ -12,6 +12,9 @@
 ### FILE:	/etc/init.d/greylist
 ########################################################################
 
+# added due to request of linitian
+. /lib/lsb/init-functions
+
 client=/usr/bin/greylist
 daemon=/usr/sbin/greylistd
 rundir=/var/run/greylistd

@@ -1,3 +1,14 @@
+greylistd (0.8.8.2) experimental; urgency=low
+
+  * debian/preinst: improve handling of init.d file (Closes: #687469)
+  * debian/control: set standard to 3.9.4 (no changes)
+  * debian/init: add . /lib/lsb/init-functions
+  * program/greylistd: add new config file to whitelist hosts from 
+                       dnslists (see README.dnslists-known-hosts
+                       (Closes: #523695)
+
+ -- Thorsten Alteholz <debian@alteholz.de>  Sat, 27 Jul 2013 10:00:00 +0200
+
 greylistd (0.8.8.1) experimental; urgency=low
 
   * new Maintainer (Closes:  #595693)

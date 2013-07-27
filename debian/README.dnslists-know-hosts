@@ -1,0 +1,8 @@
+It makes no sense to greylist any host that properly retries to send the 
+email. Each of those hosts might be whitelisted as well so that legitimate
+emails can pass without delay.
+Some services create lists of such hosts, for example:
+	list.dnswl.org	(this service is only free for non-commercial users)
+
+Each service needs to have its own line in file:
+	/etc/greylistd/dnswl-known-good-sender
