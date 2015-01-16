@@ -1,3 +1,11 @@
+greylistd (0.8.8.4) unstable; urgency=medium
+
+  * debian/preinst: take care of old /etc/init.d/greylist while doing
+                    install -> remove -> distupgrade -> install
+                    (Closes: #775063)
+
+ -- Thorsten Alteholz <debian@alteholz.de>  Fri, 16 Jan 2015 18:10:00 +0100
+
 greylistd (0.8.8.3) unstable; urgency=medium
 
   * upload to unstable
