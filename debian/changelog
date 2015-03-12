@@ -1,3 +1,11 @@
+greylistd (0.8.8.5) unstable; urgency=medium
+
+  * debian/greylistd.maintscript: Properly dispose of the obsolete
+    /etc/init.d/greylist.  (Closes: #757725)
+    (patch by Andreas Beckmann <anbe@debian.org>)
+
+ -- Thorsten Alteholz <debian@alteholz.de>  Thu, 12 Mar 2015 18:30:00 +0100
+
 greylistd (0.8.8.4) unstable; urgency=medium
 
   * debian/preinst: take care of old /etc/init.d/greylist while doing
