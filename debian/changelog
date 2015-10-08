@@ -1,3 +1,17 @@
+greylistd (0.8.8.6) unstable; urgency=medium
+
+  * program/greylistd-setup-exim4
+    change entry for dnslists (Closes: #771238)
+  * Drop unused build-depends on python-support (Closes: #786202)
+    (Thanks to Scott Kitterman)
+  * Add build-depends on dh-python so the current version is used (instead of
+    the old copy shipped in python-defaults)
+    (Thanks to Scott Kitterman)
+  * debian/control: bump standard to 3.9.6 (no changes)
+  * remove debian/pycompat
+
+ -- Thorsten Alteholz <debian@alteholz.de>  Thu, 08 Oct 2015 18:30:00 +0200
+
 greylistd (0.8.8.5) unstable; urgency=medium
 
   * debian/greylistd.maintscript: Properly dispose of the obsolete
