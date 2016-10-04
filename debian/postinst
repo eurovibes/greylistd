@@ -124,7 +124,8 @@ do_configure()
     fi
 
     db_stop || true
-    [ "$restart_exim" != 'no' ] && invoke-rc.d exim4 restart
+    invoke-rc.d --query exim4 restart && ret=0 || ret=$?
+    [ "$restart_exim" != 'no' ] && [ "$ret" = "104" ] && invoke-rc.d exim4 restart
 
     ### Create working directories
     for dir in "$datadir" "$rundir"

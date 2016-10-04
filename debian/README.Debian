@@ -36,7 +36,7 @@ Setting up greylistd on a Debian system
      * One in the "acl_check_data" ACL, for bounces (mail with no envelope
        sender).
 
-  - If your ACL configration is different from that supplied with Debian
+  - If your ACL configuration is different from that supplied with Debian
     (i.e. if you use different ACL names and/or file locations), you can
     run the command:
        # greylistd-setup-exim4 add <configfile> <aclname>
