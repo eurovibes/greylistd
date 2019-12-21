@@ -1,3 +1,13 @@
+greylistd (0.8.8.8) unstable; urgency=medium
+
+  * apply patch for python3 (Closes: #943050)
+    thanks a lot to Stephan Helma for the patch
+  * debian/control: bump standard to 4.4.1 (no changes)
+  * debian/control: use dh12
+  * debian/control: only use python3 in dependencies
+
+ -- Thorsten Alteholz <debian@alteholz.de>  Sat, 21 Dec 2019 15:30:00 +0100
+
 greylistd (0.8.8.7) unstable; urgency=medium
 
   * just call /etc/init.d/exim4 when available (Closes: #837501)
@@ -49,7 +59,7 @@ greylistd (0.8.8.2) experimental; urgency=low
   * debian/preinst: improve handling of init.d file (Closes: #687469)
   * debian/control: set standard to 3.9.4 (no changes)
   * debian/init: add . /lib/lsb/init-functions
-  * program/greylistd: add new config file to whitelist hosts from 
+  * program/greylistd: add new config file to whitelist hosts from
                        dnslists (see README.dnslists-known-hosts
                        (Closes: #523695)
 
@@ -279,7 +289,7 @@ greylistd (0.6.6) unstable; urgency=low
     file does not already exist.  Closes: #286364.
   * Program would exit with socket error ('broken pipe') if the client
     connected before receiving reply.
-  * Program died quietly on errors, because I had omitted a "raise" 
+  * Program died quietly on errors, because I had omitted a "raise"
     after cleanup in the exception handler.  Fixed.
 
  -- Tor Slettnes <tor@slett.net>  Tue, 21 Dec 2004 00:14:43 -0800
@@ -311,11 +321,11 @@ greylistd (0.6.3) unstable; urgency=low
   * Fixed problem with statistics counter; would overcount the
     number of items that entered each list (white, grey).
   * Fixed unlimited growth of items in 'newTriplets' list in the case
-    where these were not periodically flushed to file (i.e. when 
+    where these were not periodically flushed to file (i.e. when
     'savetriplets = false')
   * Changed package description to reflect some more detail of how
     greylistd interacts with MTA. Closes: #285346.
-  * Removed path names from the command synopsis line in the 
+  * Removed path names from the command synopsis line in the
     greylist(1) and greylistd(8) manual pages. Closes: #267225.
   * Format "list" output to include date of last hit and number of hits
     for each data set.  Closes: #268059.
@@ -332,7 +342,7 @@ greylistd (0.6.3) unstable; urgency=low
     "update" commands; if specified, greylistd returns a boolean value
     rather than a list name.  So "greylist --grey <data>" would show
     whether <data> is currently in a "grey" state.
-	
+
  -- Tor Slettnes <tor@slett.net>  Wed, 15 Dec 2004 00:41:37 -0800
 
 greylistd (0.6.2) unstable; urgency=low
@@ -388,7 +398,7 @@ greylistd (0.5.2) unstable; urgency=low
     native Debian package. Closes: #261097.
   * Removed debian/greylistd, left over from prior "debmake".
     Closes: #261094.
-  * Added copyright information in source files; fixed "copyright" 
+  * Added copyright information in source files; fixed "copyright"
     file.  Closes: #261092.
   * Added postrm script to remove greylist data. Closes: #261099.
 
@@ -396,9 +406,9 @@ greylistd (0.5.2) unstable; urgency=low
 
 greylistd (0.5.1-2) unstable; urgency=low
 
-  * Added 'doc/examples/30_exim4-config_check_rcpt', containing the 
+  * Added 'doc/examples/30_exim4-config_check_rcpt', containing the
     stock "acl_check_rcpt" from the exim4-config package, but with
-    the 'greylistd' stuff included.   
+    the 'greylistd' stuff included.
 
  -- Tor Slettnes <tor@slett.net>  Wed, 30 Jun 2004 10:09:17 -0700
 
@@ -469,7 +479,7 @@ greylistd (0.2-1) unstable; urgency=low
   * Corrected the error message "Unknown command" in 'greylist' to
     "Unknown action", as printed in the help output.
   * The path of the configuration file is now /etc/default/greylistd.
-    It contains two new sections: [socket] and [data], listing the 
+    It contains two new sections: [socket] and [data], listing the
     file path of the UNIX domain socket and the data hash file,
     respectively.
   * The default filemode of the socket is now 0660; this can be

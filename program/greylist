@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 ########################################################################
 ### FILE:	greylist
 ### PURPOSE:	Command line interface to "greylistd(8)"
@@ -22,7 +22,7 @@
 
 from socket       import socket, AF_UNIX, SOCK_STREAM
 from sys          import argv, stdout, stderr, exit
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 
 ### Define values not yet availble in Python 2.1
@@ -128,13 +128,13 @@ sock = socket(AF_UNIX, SOCK_STREAM)
 
 try:
     sock.connect(sockfile)
-except Exception, e:
+except Exception as e:
     stderr.write("%s: %s\n"%(sockfile, e[1]))
     exit(-1)
 
 try:
     sock.send(" ".join(argv[1:]))
-except Exception, e:
+except Exception as e:
     stderr.write("%s: %s\n"%(sockfile, e[1]))
     exit(-1)
 

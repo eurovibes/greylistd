@@ -2,13 +2,16 @@ Source: greylistd
 Section: mail
 Priority: optional
 Maintainer: Thorsten Alteholz <debian@alteholz.de>
-Build-Depends: debhelper (>= 9), dh-python
-Build-Depends-Indep: python
-Standards-Version: 3.9.8
+Build-Depends: debhelper (>= 12)
+	, dh-python
+	, python3
+#Build-Depends-Indep: python
+Standards-Version: 4.4.1
 
 Package: greylistd
 Architecture: all
-Depends: ${python:Depends}, ${misc:Depends}, adduser
+Depends: ${python3:Depends}, ${misc:Depends}, adduser, lsb-base
+Pre-Depends: ${misc:Pre-Depends}
 Recommends: exim4
 Description: Greylisting daemon for use with Exim 4
  This daemon provides a simple greylisting implementation for use with

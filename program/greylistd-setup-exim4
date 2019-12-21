@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 ########################################################################
 ### FILE:	greylist-setup-exim4
 ### PURPOSE:	Add a greylisting statement to Exim 4 configuration file
@@ -171,7 +171,7 @@ def find_block (lines, decl, rxList, commentPfx="#", blocks=exim4conf_blocks):
         rxFound[compile(rx)] = False
 
 
-    for index in xrange(len(lines)):
+    for index in range(len(lines)):
         line  = lines[index].strip()
 
         if not line:
@@ -225,12 +225,12 @@ def exim4_deconfigure (lines, aclname, options):
         del lines[region[0]:region[1]]
         return "OK"
     else:
-        raise RunException, "Not Configured"
+        raise RunException("Not Configured")
 
 
 def exim4_configure (lines, aclname, options):
     if find_block(lines, aclname, exim4conf_remove_block):
-        raise RunException, "Already Configured"
+        raise RunException("Already Configured")
 
     acltype = options.get("acltype", None)
     
@@ -240,12 +240,11 @@ def exim4_configure (lines, aclname, options):
                 acltype = knowntype
                 break
         else:
-            raise RunException, \
-                  ("I cannot guess what type of ACL '%s' is.\n"
-                   "Please supply '-acltype={rcpt|data}'.")%aclname
+            raise RunException(("I cannot guess what type of ACL '%s' is.\n"
+                   "Please supply '-acltype={rcpt|data}'.")%aclname)
 
     elif not acltype in exim4conf_texts:
-        raise RunException, "Invalid ACL type: '%s'"%acltype
+        raise RunException("Invalid ACL type: '%s'"%acltype)
         
 
     if "netmask" in options:
@@ -263,13 +262,13 @@ def exim4_configure (lines, aclname, options):
 
     text = exim4conf_texts[acltype]%hostaddress
 
-    for lineno in xrange(len(lines)):
+    for lineno in range(len(lines)):
         if lines[lineno].strip().startswith(aclname + ":"):
             lines[lineno+1:lineno+1] = text.splitlines(True)
             return "OK"
 
     else:
-        raise RunException, "Could not find ACL '%s'"%aclname
+        raise RunException("Could not find ACL '%s'"%aclname)
 
 
 def run (command, *args):
@@ -291,11 +290,11 @@ def exim4_setup (filename, aclname, function, options, doupdate):
 
         ok = True
 
-    except IOError, e:
+    except IOError as e:
         ok, message = False, e[1]
 
 
-    except RunException, e:
+    except RunException as e:
         ok, message = False, e[0]
     
 

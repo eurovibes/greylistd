@@ -10,7 +10,7 @@ package=greylistd
 tmp=$(CURDIR)/debian/greylistd
 
 %:
-	dh $@ --with python2
+	dh $@ --with python3
 
 ### old version
 #configure: configure-stamp
@@ -22,7 +22,7 @@ tmp=$(CURDIR)/debian/greylistd
 #build: build-arch build-indep
 #build-arch: build-stamp
 #build-indep: build-stamp
-#build-stamp: configure-stamp 
+#build-stamp: configure-stamp
 #	dh_testdir
 #	touch build-stamp
 #
@@ -43,7 +43,7 @@ tmp=$(CURDIR)/debian/greylistd
 #binary-indep: build install
 #	dh_testdir
 #	dh_testroot
-#	dh_installchangelogs 
+#	dh_installchangelogs
 #	dh_installdocs
 #	dh_installexamples
 #	dh_install
