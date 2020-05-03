@@ -3,10 +3,10 @@
 ### FILE:	greylistd.py
 ### PURPOSE:	Simple greylisting daemon.  See "greylistd(8)".
 ###		For an introduction to greylisting, see:
-### 		http://projects.puremagic.com/greylisting/
+###		http://projects.puremagic.com/greylisting/
 ###
-### 		This program listens for connections on a UNIX domain
-###		socket, presumably from an MTA such as Exim.  Nominally, 
+###		This program listens for connections on a UNIX domain
+###		socket, presumably from an MTA such as Exim.  Nominally,
 ###		it reads an identifier (referred to as a "triplet"),
 ###		and returns a single word ("white" or "grey") depending
 ###             on prior knowledge of said identifier.
@@ -270,7 +270,7 @@ def saveToFile (datafile, dictionary, perm=0600):
         fp = file(datafile, 'w')
 
         chmod(datafile, perm)
-        
+
         for (section, subdict) in dictionary.items():
             fp.write("[%s]\n"%section)
 
@@ -306,15 +306,13 @@ def loadConfigAndData ():
 
     expireKeys(now)
     data[STATS][LASTSAVE] = now
-    
-
 
 def saveData (datafile):
     ### Save data hashes and timestamps
     tempfile = "%s.%s"%(datafile, getpid())
 
     saveToFile(tempfile, data)
-    
+
     try:
         rename(tempfile, datafile)
     except OSError as e:
@@ -401,7 +399,7 @@ def listTriplets (fp, socket, options):
                     last, first, num = listdata[key]
                     ldate = strftime("%Y-%m-%d %H:%M:%S", localtime(last))
                     client.send(listformat%(ldate, num, value.strip()))
-            
+
             except ValueError:
                 if not parseErrors:
                     log("While reading triplets from %s:"%
@@ -484,7 +482,7 @@ def do_check (options, args, update=False):
         if update and config[DATA][TRIPLETFILE] and config[DATA][SAVETRIPLETS]:
             newTriplets[key] = triplet.lower()
 
-    elif ((state == GREY) and 
+    elif ((state == GREY) and
           (data[GREY][key][IDX_FIRST] + config[TIMEOUTS][RETRYMIN] < now)):
         state = WHITE
 
@@ -576,7 +574,7 @@ def do_mrtg ():
 
     text.append(duration(now - starttime))
     text.append(gethostname())
-    
+
     text.append('')
     return "\n".join(text)
 
@@ -595,7 +593,7 @@ def do_list (options, socket):
 
     except IOError as e:
         raise CommandError("Cannot read from '%s': %s\n"%(config[DATA][TRIPLETFILE], e[1]))
-    
+
 
 def do_clear (options):
     for listkey in (options or datatypes):
@@ -787,7 +785,7 @@ try:
     while sockets:
         interval = config[DATA][UPDATEINTERVAL]
         lastsave = data[STATS][LASTSAVE]
-        
+
         if interval and (lastsave + interval < time()):
             (inlist, outlist, errlist) = select(sockets, [], [], 0)
         else:
@@ -835,7 +833,7 @@ except Exception as e:
     code     = frame.f_code
     line     = frame.f_lineno
     filename = code.co_filename
-            
+
     log("### Fatal event in %s, line %d:"%(filename, line), LOG_ERR)
     log(">>> %s"%e, LOG_ERR)
 

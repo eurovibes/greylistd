@@ -39,7 +39,7 @@ exim4conf_texts = {
   # This statement has been added by "greylistd-setup-exim4",
   # and can be removed by running "greylistd-setup-exim4 remove".
   # Any changes you make here will then be lost.
-  # 
+  #
   # Perform greylisting on incoming messages from remote hosts.
   # We do NOT greylist messages with no envelope sender, because that
   # would conflict with remote hosts doing callback verifications, and we
@@ -104,7 +104,7 @@ exim4conf_texts = {
   # This statement has been added by "greylistd-setup-exim4",
   # and can be removed by running "greylistd-setup-exim4 remove".
   # Any changes you make here will then be lost.
-  # 
+  #
   # Perform greylisting on incoming messages with no envelope sender here.
   # We did not subject these to greylisting after RCPT TO:, because that
   # would interfere with remote hosts doing sender callout verifications.
@@ -233,7 +233,7 @@ def exim4_configure (lines, aclname, options):
         raise RunException("Already Configured")
 
     acltype = options.get("acltype", None)
-    
+
     if not acltype:
         for knowntype in exim4conf_texts.keys():
             if knowntype in aclname:
@@ -245,7 +245,7 @@ def exim4_configure (lines, aclname, options):
 
     elif not acltype in exim4conf_texts:
         raise RunException("Invalid ACL type: '%s'"%acltype)
-        
+
 
     if "netmask" in options:
         try:
@@ -296,7 +296,7 @@ def exim4_setup (filename, aclname, function, options, doupdate):
 
     except RunException as e:
         ok, message = False, e[0]
-    
+
 
     if not "quiet" in options:
         if len(filename) > 40:
@@ -378,7 +378,7 @@ for arg in argv:
             (option, value) = arg.lstrip("-").split("=", 1)
         except:
             (option, value) = arg.lstrip("-"), None
-            
+
         options[option] = value
 
     elif not action:

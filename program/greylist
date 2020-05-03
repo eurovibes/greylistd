@@ -46,7 +46,6 @@ sockfile = "/var/run/greylistd/socket"
 commands = ("add", "delete", "check", "update",
             "stats", "list",  "clear", "save",
             "reload", "mrtg")
-            
 
 
 def usage (progname, message=None):
@@ -114,7 +113,6 @@ elif not action in commands:
     usage(progname, "Invalid action: '%s'"%action)
 
 
-
 confParser = ConfigParser()
 confParser.read(conffile)
 try:
@@ -149,7 +147,7 @@ while stat:
 
     except IOError:
         break
-    
+
     else:
         if not firstword and stat.strip():
             firstword = stat.split(None, 1)[0]
