@@ -265,7 +265,7 @@ def loadFromFile (datafile, dictionary, typelist=None):
 
 
 
-def saveToFile (datafile, dictionary, perm=0600):
+def saveToFile (datafile, dictionary, perm=0o600):
     try:
         fp = open(datafile, 'w')
 
@@ -321,7 +321,7 @@ def saveData (datafile):
 
 
 
-def syncTriplets (datafile, perm=0600):
+def syncTriplets (datafile, perm=0o600):
     source = datafile
     target = "%s.%s"%(source, getpid())
 
