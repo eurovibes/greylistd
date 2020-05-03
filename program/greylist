@@ -25,10 +25,6 @@ from sys          import argv, stdout, stderr, exit
 from configparser import ConfigParser
 
 
-### Define values not yet availble in Python 2.1
-False, True = (0 is 1), (1 is 1)
-
-
 ### Exit codes based on responses from greylistd
 exitcodes = { "error:" : -1,
               "white"  : 0,
