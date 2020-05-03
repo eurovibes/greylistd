@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 ########################################################################
-### FILE:	greylist-setup-exim4
-### PURPOSE:	Add a greylisting statement to Exim 4 configuration file
+### FILE:       greylist-setup-exim4
+### PURPOSE:    Add a greylisting statement to Exim 4 configuration file
 ########################################################################
 
 from sys       import version, stdin, stderr, argv, exit
@@ -251,7 +251,7 @@ def exim4_configure (lines, aclname, options):
         try:
             netmask = int(options["netmask"])
         except:
-	    nmstring=options["netmask"]
+            nmstring=options["netmask"]
             raise RuntimeError("Invalid netmask size: '%(nmstring)s'"%vars())
 ### org           raise "Invalid netmask size: '%s'"%options["netmask"]
 
