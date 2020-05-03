@@ -210,7 +210,7 @@ def typeConvert(typeobject, string):
 
 def loadFromFile (datafile, dictionary, typelist=None):
     try:
-        fp      = file(datafile)
+        fp      = open(datafile)
         section = None
 
         logPfx  = 'In %s:'%datafile
@@ -267,7 +267,7 @@ def loadFromFile (datafile, dictionary, typelist=None):
 
 def saveToFile (datafile, dictionary, perm=0600):
     try:
-        fp = file(datafile, 'w')
+        fp = open(datafile, 'w')
 
         chmod(datafile, perm)
 
@@ -326,12 +326,12 @@ def syncTriplets (datafile, perm=0600):
     target = "%s.%s"%(source, getpid())
 
     try:
-        infile  = file(source, "r")
+        infile  = open(source, "r")
     except IOError:
         infile  = None
 
     try:
-        outfile = file(target, "w")
+        outfile = open(target, "w")
 
         chmod(target, perm)
 
@@ -587,7 +587,7 @@ def do_list (options, socket):
     do_save()
 
     try:
-        infile = file(config[DATA][TRIPLETFILE], "r")
+        infile = open(config[DATA][TRIPLETFILE], "r")
         error = listTriplets(infile, socket, options)
         infile.close()
 

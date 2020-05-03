@@ -284,9 +284,8 @@ def exim4_setup (filename, aclname, function, options, doupdate):
         message = function(lines, aclname, options)
 
         if doupdate:
-            fp = file(filename, "w")
-            fp.writelines(lines)
-            fp.close()
+            with open(filename, "w") as fp:
+                fp.writelines(lines)
 
         ok = True
 
