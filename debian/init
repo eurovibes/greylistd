@@ -1,7 +1,14 @@
 #!/bin/sh
+### BEGIN INIT INFO
+# Provides:          greylist
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start/stop the greylistd(8) daemon.
+### END INIT INFO
 ########################################################################
 ### FILE:	/etc/init.d/greylist
-### PURPOSE:	Start/stop the greylistd(8) daemon.
 ########################################################################
 
 client=/usr/bin/greylist
