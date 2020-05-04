@@ -831,7 +831,7 @@ except Exception as e:
 
     frame    = tb.tb_frame
     code     = frame.f_code
-    line     = frame.f_lineno
+    line     = tb.tb_lineno
     filename = code.co_filename
 
     log("### Fatal event in %s, line %d:"%(filename, line), LOG_ERR)
