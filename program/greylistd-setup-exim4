@@ -10,8 +10,8 @@ from os        import listdir, spawnl, P_WAIT
 from re        import compile
 
 ### Ensure that we can run this program
-if version < "2.3":
-    stderr.write("This program requires Python 2.3 or newer\n")
+if version < "3.6":
+    stderr.write("This program requires Python 3.0 or newer\n")
     exit(1)
 
 
