@@ -39,7 +39,7 @@ from sys          import version as PyVersion, stdout, stderr, exit, exc_info
 from signal       import signal, SIGTERM, SIGHUP, SIGUSR1, SIG_IGN, SIG_DFL
 from syslog       import openlog, syslog, LOG_NOTICE, LOG_WARNING, LOG_ERR
 from select       import select
-from inspect      import getargspec
+from inspect      import getfullargspec
 
 
 ### Ensure that we can run this program
@@ -648,7 +648,7 @@ def runCommand (line, client):
     else:
         function = do_update
 
-    args, varargs, varkw, defaults =  getargspec(function)
+    args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations =  getfullargspec(function)
 
     while words and words[0].startswith("-"):
         options.append(words.pop(0).lstrip("-"))
