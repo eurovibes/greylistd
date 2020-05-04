@@ -12,6 +12,11 @@ tmp=$(CURDIR)/debian/greylistd
 %:
 	dh $@ --with python3
 
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+override_dh_auto_test:
+	python3 -m unittest discover -vv -s tests/
+endif
+
 ### old version
 #configure: configure-stamp
 #configure-stamp:
