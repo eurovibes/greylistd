@@ -123,13 +123,13 @@ sock = socket(AF_UNIX, SOCK_STREAM)
 try:
     sock.connect(sockfile)
 except Exception as e:
-    stderr.write("%s: %s\n"%(sockfile, e[1]))
+    stderr.write("%s: %s\n"%(sockfile, str(e)))
     exit(-1)
 
 try:
-    sock.send(" ".join(argv[1:]))
+    sock.send(" ".join(argv[1:]).encode())
 except Exception as e:
-    stderr.write("%s: %s\n"%(sockfile, e[1]))
+    stderr.write("%s: %s\n"%(sockfile, str(e)))
     exit(-1)
 
 
@@ -139,7 +139,7 @@ firstword = None
 while stat:
     stat = sock.recv(1024)
     try:
-        stdout.write("%s"%stat)
+        stdout.write("%s"%stat.decode())
 
     except IOError:
         break

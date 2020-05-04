@@ -290,11 +290,11 @@ def exim4_setup (filename, aclname, function, options, doupdate):
         ok = True
 
     except IOError as e:
-        ok, message = False, e[1]
+        ok, message = False, str(e)
 
 
     except RunException as e:
-        ok, message = False, e[0]
+        ok, message = False, str(e)
 
 
     if not "quiet" in options:

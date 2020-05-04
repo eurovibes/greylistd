@@ -261,7 +261,7 @@ def loadFromFile (datafile, dictionary, typelist=None):
         fp.close()
 
     except IOError as e:
-        raise RunException("Cannot read from '%s': %s"%(datafile, e[1]))
+        raise RunException("Cannot read from '%s': %s"%(datafile, str(e)))
 
 
 
@@ -284,10 +284,10 @@ def saveToFile (datafile, dictionary, perm=0o600):
         fp.close()
 
     except IOError as e:
-        raise RunException("Cannot write to %s: %s"%(datafile, e[1]))
+        raise RunException("Cannot write to %s: %s"%(datafile, str(e)))
 
     except OSError as e:
-        raise RunException("Cannot set mode 0%o on %s: %s"%(perm, datafile, e[1]))
+        raise RunException("Cannot set mode 0%o on %s: %s"%(perm, datafile, str(e)))
 
 
 
@@ -317,7 +317,7 @@ def saveData (datafile):
         rename(tempfile, datafile)
     except OSError as e:
         raise RunException("Cannot rename %s to %s: %s"%(tempfile,
-                                                           datafile, e[1]))
+                                                         datafile, str(e)))
 
 
 
@@ -355,10 +355,10 @@ def syncTriplets (datafile, perm=0o600):
         outfile.close()
 
     except IOError as e:
-        raise RunException("Could not write to %s: %s"%(target, e[1]))
+        raise RunException("Could not write to %s: %s"%(target, str(e)))
 
     except OSError as e:
-        raise RunException("Cannot set mode 0%o on %s: %s"%(perm, target, e[1]))
+        raise RunException("Cannot set mode 0%o on %s: %s"%(perm, target, str(e)))
 
 
     if infile:
@@ -367,7 +367,7 @@ def syncTriplets (datafile, perm=0o600):
     try:
         rename(target, source)
     except OSError as e:
-        raise RunException("Could not rename %s to %s: %s"%(target, source, e[1]))
+        raise RunException("Could not rename %s to %s: %s"%(target, source, str(e)))
 
 
 
@@ -386,8 +386,10 @@ def listTriplets (fp, socket, options):
         listdata = data[listkey]
         line     = "%slist data:"%listkey.capitalize()
         dash     = "="*len(line)
-        client.send("\n%s\n%s\n"%(line, dash))
-        client.send(listformat%("Last Seen", "Count", "Data"))
+        out = "\n%s\n%s\n"%(line, dash)
+        client.send(out.encode())
+        out = listformat%("Last Seen", "Count", "Data")
+        client.send(out.encode())
 
         fp.seek(0)
         for line in fp:
@@ -398,7 +400,8 @@ def listTriplets (fp, socket, options):
                 if key in listdata:
                     last, first, num = listdata[key]
                     ldate = strftime("%Y-%m-%d %H:%M:%S", localtime(last))
-                    client.send(listformat%(ldate, num, value.strip()))
+                    out = listformat%(ldate, num, value.strip())
+                    client.send(out.encode())
 
             except ValueError:
                 if not parseErrors:
@@ -592,7 +595,8 @@ def do_list (options, socket):
         infile.close()
 
     except IOError as e:
-        raise CommandError("Cannot read from '%s': %s\n"%(config[DATA][TRIPLETFILE], e[1]))
+        raise CommandError("Cannot read from '%s': %s\n"%
+                           (str(config[DATA][TRIPLETFILE]), str(e)))
 
 
 def do_clear (options):
@@ -668,7 +672,7 @@ def runCommand (line, client):
 
         elif arg == "args":
             useargs = True
-            arglist.append(words)
+            arglist.append(str(words))
 
         elif arg == "socket":
             arglist.append(client)
@@ -719,7 +723,7 @@ def createSocket (path, owner, mode):
         try:
             chown(path, uid, gid)
         except OSError as e:
-            raise RunException("Could not change ownership of socket %s: %s"%(path, e[1]))
+            raise RunException("Could not change ownership of socket %s: %s"%(path, str(e)))
 
     try:
         chmod(path, int(mode, 8))
@@ -727,7 +731,7 @@ def createSocket (path, owner, mode):
     except ValueError:
         raise RunException("Specified socket mode '%s' is not a valid octal number"%mode)
     except OSError as e:
-        raise RunException("Could not set mode 0%o on socket %s: %s"%(mode, path, e[1]))
+        raise RunException("Could not set mode 0%o on socket %s: %s"%(mode, path, str(e)))
 
     sock.listen(5)
     return sock
@@ -807,12 +811,12 @@ try:
             client = inlist[0]
 
             try:
-                line = client.recv(16384)
+                line = client.recv(16384).decode()
                 reply = runCommand(line, client)
-                client.send(reply)
+                client.send(reply.encode())
 
             except SocketError as e:
-                log("Socket error: %s"%e[1])
+                log("Socket error: %s"%str(e))
 
             client.close()
             sockets.remove(client)
