@@ -25,7 +25,8 @@ exim4conf_default_places = (
 
 ### Words that separate blocks in the Exim 4 configuation file
 exim4conf_blocks = [
-    "begin", "accept", "defer", "deny", "discard", "drop", "require", "warn" ]
+    "begin", "accept", "defer", "deny", "discard", "drop", "require", "warn",
+    ".ifdef", ".ifndef", ".else", ".endif"]
 
 ### What blocks do we remove when unconfiguring greylistd?
 ### Every line in the block must match at least one item in this list,
@@ -192,6 +193,9 @@ def find_block (lines, decl, rxList, commentPfx="#", blocks=exim4conf_blocks):
         elif currentDecl == decl:
             if line.split()[0] in blocks:
                 if region:
+                    if startComment and "blacklisted by greylist" in lines[startComment]:
+                        region = (startBlock, index+1)
+                        continue
                     return region
 
                 elif startComment is not None:
