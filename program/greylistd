@@ -22,7 +22,7 @@ from os           import remove, rename, chmod, chown, getuid, getpid, isatty
 from pwd          import getpwnam
 from grp          import getgrnam
 from os.path      import join, exists
-from sys          import version as PyVersion, stdout, stderr, exit, exc_info
+from sys          import version as PyVersion, argv, stdout, stderr, exit, exc_info
 from signal       import signal, SIGTERM, SIGHUP, SIGUSR1, SIG_IGN, SIG_DFL
 from syslog       import openlog, syslog, LOG_NOTICE, LOG_WARNING, LOG_ERR
 from select       import select
@@ -769,6 +769,8 @@ def term (signum=None, frame=None):
 def hangup (signum=None, frame=None):
     do_reload()
 
+if len(argv) > 1:
+    conffile = argv[1]
 
 startup()
 
