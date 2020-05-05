@@ -68,7 +68,7 @@ config     = { DATA       : { STATEFILE      : "/var/lib/greylistd/states",
 
 
 ### Lists/states
-(WHITE, GREY, BLACK)   = ("white", "grey", "black")
+(WHITE, GREY, BLACK, UNSEEN)   = ("white", "grey", "black", "unseen")
 
 ### Additional data file sections/items
 (STATS, START, LASTSAVE) = ("statistics", "start", "lastsave")
@@ -436,6 +436,15 @@ def do_delete (options, key):
     else:
         raise CommandError("Not found")
 
+def do_status (options, args):
+    if config[DATA][SINGLECHECK]:
+        key = hash(args[0])
+    else:
+        key = hash(" ".join(args))
+    state = listStatus(key)
+    if state is None:
+        state = UNSEEN
+    return state
 
 def do_check (options, args, update=False):
     if options:

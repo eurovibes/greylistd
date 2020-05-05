@@ -28,7 +28,7 @@ sockfile = "/var/run/greylistd/socket"
 ### Commands that can be given over the socket
 commands = ("add", "delete", "check", "update",
             "stats", "list",  "clear", "save",
-            "reload", "mrtg")
+            "reload", "mrtg", "status")
 
 
 def usage (progname, message=None):
@@ -56,6 +56,9 @@ def usage (progname, message=None):
         "  update [--white|--grey|--black] <data> ...",
         "    Check the current status of <data>; update lists accordingly.",
         "    This is how MTAs would normally use the command.",
+        "",
+        "  status <data> ...",
+        "    Show the current status of <data>; Report \"unseen\" if not in database.",
         "",
         "  stats",
         "    Show some general list statistics.",
