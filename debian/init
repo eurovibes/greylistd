@@ -45,16 +45,18 @@ case "$1" in
 
 	echo -n "Starting greylisting daemon: "
 	start-stop-daemon --start --background \
-	    --chuid "$user" \
-	    --pidfile "$pidfile" --make-pidfile \
-	    --exec "$daemon" &&
+			  --chuid "$user" \
+			  --user "$user" \
+			  --pidfile "$pidfile" \
+			  --make-pidfile \
+			  --exec "$daemon" &&
 	    echo "${daemon##*/}."
 	;;
 
 
     stop)
 	echo -n "Stopping greylisting daemon: "
-	start-stop-daemon --stop --pidfile "$pidfile" &&
+	start-stop-daemon --stop --user "$user" --pidfile "$pidfile" &&
 	    rm -f "$pidfile" &&
 	    echo "${daemon##*/}."
 	;;
