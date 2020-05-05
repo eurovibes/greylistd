@@ -3,6 +3,7 @@ Section: mail
 Priority: optional
 Maintainer: Thorsten Alteholz <debian@alteholz.de>
 Build-Depends: debhelper (>= 12)
+	, debhelper-compat (= 12)
 	, dh-python
 	, python3
 #Build-Depends-Indep: python
