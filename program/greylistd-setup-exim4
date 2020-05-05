@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# SPDX-License-Identifier: GPL-2.0-or-later
 ########################################################################
 ### FILE:       greylist-setup-exim4
 ### PURPOSE:    Add a greylisting statement to Exim 4 configuration file
