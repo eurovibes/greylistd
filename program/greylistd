@@ -460,21 +460,19 @@ def do_check (options, args, update=False):
         key = hash(" ".join(args))
         state     = listStatus(key)
 
-    if config[DATA][SINGLEUPDATE]:
-        key = hash(args[0])
-        triplet = args[0]
-    else:
-        key = hash(" ".join(args))
-        triplet = " ".join(args)
-
     if state is None:
         state = GREY
         if update and config[DATA][TRIPLETFILE] and config[DATA][SAVETRIPLETS]:
-            newTriplets[key] = triplet.lower()
+            newTriplets[key] = " ".join(args).lower()
 
     elif ((state == GREY) and
           (data[GREY][key][IDX_FIRST] + config[TIMEOUTS][RETRYMIN] < now)):
         state = WHITE
+        if update and config[DATA][SINGLEUPDATE]:
+            do_delete(None, key)
+            key = hash(args[0])
+            if config[DATA][TRIPLETFILE] and config[DATA][SAVETRIPLETS]:
+                newTriplets[key] = args[0]
 
     if update:
         do_add([ state ], key)
