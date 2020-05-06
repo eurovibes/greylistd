@@ -113,14 +113,6 @@ do_configure()
     then
         db_get "$owner/restartexim"
 	$RET && restart_exim=yes
-
-    ### Otherwise, if we are updating from 0.7 or prior versions, we add
-    ### the greylist user from the "ugid" DebConf setting
-    elif dpkg --compare-versions "$oldversion" le "0.7" && db_get "$owner/ugid"
-    then
-	uid="${RET%:*}"
-	add_user "$uid" "$groupname" || true
-
     fi
 
     db_stop || true

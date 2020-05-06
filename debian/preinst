@@ -29,17 +29,6 @@ set_config_value()
 
 case "$1" in
     install|upgrade)
-	### If we are upgrading from v0.7, the "UGID=" setting in
-        ### /etc/init.d/greylist would have been overwritten by DebConf.
-        ### Now, however, this is a conffile.  Set this value back to its
-        ### default to restore the script to its pristine state, so that
-        ### dpkg won't bother the user about the modified conffile.
-
-	if dpkg --compare-versions "$2" eq "0.7"
-	then
-	    set_config_value /etc/init.d/greylist UGID mail:mail
-	fi
-
 	### In version 0.8.8 the /etc/init.d/ file is called greylist.
         ### Newer packages call this file greylistd, so manually remove
         ### the old one.
