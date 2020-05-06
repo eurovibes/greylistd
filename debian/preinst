@@ -29,14 +29,6 @@ set_config_value()
 
 case "$1" in
     install|upgrade)
-	### In version 0.8.8 the /etc/init.d/ file is called greylist.
-        ### Newer packages call this file greylistd, so manually remove
-        ### the old one.
-	if dpkg --compare-versions "$2" eq "0.8.8"
-	then
-	    echo "I: update-rc.d -f greylist remove"
-	    update-rc.d -f greylist remove
-	fi
     ;;
 
     abort-upgrade)
