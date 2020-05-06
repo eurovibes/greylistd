@@ -106,7 +106,7 @@ def expireKeys (now):
     for (listKey, timeoutKey) in ((GREY,  RETRYMAX),
                                   (WHITE, EXPIRE),
                                   (BLACK, EXPIRE)):
-        for (dataKey, dataValue) in data[listKey].items():
+        for (dataKey, dataValue) in data[listKey].copy().items():
             if dataValue[IDX_LAST] + config[TIMEOUTS][timeoutKey] < now:
                 del data[listKey][dataKey]
 
