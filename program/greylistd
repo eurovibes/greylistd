@@ -789,8 +789,7 @@ try:
         if interval and (lastsave + interval < time()):
             (inlist, outlist, errlist) = select(sockets, [], [], 0)
         else:
-            (inlist, outlist, errlist) = select(sockets, [], [])
-
+            (inlist, outlist, errlist) = select(sockets, [], [], interval)
 
         if not inlist:
             try:
