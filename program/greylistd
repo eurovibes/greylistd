@@ -38,9 +38,9 @@ if PyVersion < "3.6":
 
 # Configuration file sections, items
 (DATA, STATEFILE, TRIPLETFILE, SAVETRIPLETS, UPDATEINTERVAL,
-    SINGLECHECK, SINGLEUPDATE) = (
-    "data", "statefile", "tripletfile", "savetriplets", "update",
-    "singlecheck", "singleupdate")
+ SINGLECHECK, SINGLEUPDATE) = (
+     "data", "statefile", "tripletfile", "savetriplets", "update",
+     "singlecheck", "singleupdate")
 
 (SOCKET, SOCKPATH, SOCKOWNER, SOCKMODE) = (
     "socket", "path", "owner", "mode")
@@ -96,16 +96,16 @@ datatypes = {WHITE: (int, (int, int, int)),
 newTriplets = {}
 
 
-class RunException (Exception):
+class RunException(Exception):
     pass
 
 
-class CommandError (RunException):
+class CommandError(RunException):
     pass
 
 
 def expireKeys(now):
-    for (listKey, timeoutKey) in ((GREY,  RETRYMAX),
+    for (listKey, timeoutKey) in ((GREY, RETRYMAX),
                                   (WHITE, EXPIRE),
                                   (BLACK, EXPIRE)):
         for (dataKey, dataValue) in data[listKey].copy().items():
@@ -369,7 +369,7 @@ def listTriplets(fp, socket, options):
 
         listdata = data[listkey]
         line = "%slist data:" % listkey.capitalize()
-        dash = "="*len(line)
+        dash = "=" * len(line)
         out = "\n%s\n%s\n" % (line, dash)
         client.send(out.encode())
         out = listformat % ("Last Seen", "Count", "Data")
@@ -419,7 +419,7 @@ def do_add(options, key):
         if oldstate:
             del data[oldstate][key]
 
-    data[state][key] = (now, firstseen, count+1)
+    data[state][key] = (now, firstseen, count + 1)
     return "Added to %slist" % state
 
 
@@ -629,8 +629,8 @@ def runCommand(line, client):
 
     if not words:
         function = nodata
-    elif "do_"+words[0] in globals():
-        function = globals()["do_"+words.pop(0)]
+    elif "do_" + words[0] in globals():
+        function = globals()["do_" + words.pop(0)]
     else:
         function = do_update
 
@@ -728,7 +728,7 @@ def startup():
     sockets = []
 
     signal(SIGTERM, term)
-    signal(SIGHUP,  hangup)
+    signal(SIGHUP, hangup)
     openlog("greylistd")
 
     loadConfigAndData()

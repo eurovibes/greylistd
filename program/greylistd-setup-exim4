@@ -18,8 +18,8 @@ if version < "3.6":
 
 # What files/ACLs do we want to edit by default?
 exim4conf_default_places = (
-    ("/etc/exim4/exim4.conf.template",                   "acl_check_rcpt"),
-    ("/etc/exim4/exim4.conf.template",                   "acl_check_data"),
+    ("/etc/exim4/exim4.conf.template", "acl_check_rcpt"),
+    ("/etc/exim4/exim4.conf.template", "acl_check_data"),
     ("/etc/exim4/conf.d/acl/30_exim4-config_check_rcpt", "acl_check_rcpt"),
     ("/etc/exim4/conf.d/acl/40_exim4-config_check_data", "acl_check_data"))
 
@@ -32,7 +32,7 @@ exim4conf_blocks = [
 # What blocks do we remove when unconfiguring greylistd?
 # Every line in the block must match at least one item in this list,
 # and every item in the list must match at least one line in the block
-exim4conf_remove_block = ['^\s*defer',  '/var/run/greylistd/socket']
+exim4conf_remove_block = ['^\s*defer', '/var/run/greylistd/socket']
 
 
 # What text do we add to which ACLs?
@@ -156,7 +156,7 @@ exim4conf_texts = {
 }
 
 
-class RunException (Exception):
+class RunException(Exception):
     pass
 
 
@@ -193,7 +193,7 @@ def find_block(lines, decl, rxList, commentPfx="#", blocks=exim4conf_blocks):
             if line.split()[0] in blocks:
                 if region:
                     if startComment and "blacklisted by greylist" in lines[startComment]:
-                        region = (startBlock, index+1)
+                        region = (startBlock, index + 1)
                         continue
                     return region
 
@@ -215,7 +215,7 @@ def find_block(lines, decl, rxList, commentPfx="#", blocks=exim4conf_blocks):
             region = None
 
         elif startComment is None:
-            region = (startBlock, index+1)
+            region = (startBlock, index + 1)
 
     return region
 
@@ -265,7 +265,7 @@ def exim4_configure(lines, aclname, options):
 
     for lineno in range(len(lines)):
         if lines[lineno].strip().startswith(aclname + ":"):
-            lines[lineno+1:lineno+1] = text.splitlines(True)
+            lines[lineno + 1:lineno + 1] = text.splitlines(True)
             return "OK"
 
     else:

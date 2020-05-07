@@ -27,7 +27,7 @@ sockfile = "/var/run/greylistd/socket"
 
 # Commands that can be given over the socket
 commands = ("add", "delete", "check", "update",
-            "stats", "list",  "clear", "save",
+            "stats", "list", "clear", "save",
             "reload", "mrtg", "status")
 
 
