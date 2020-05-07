@@ -2,21 +2,21 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 ########################################################################
 ### FILE:       greylist-setup-exim4
-### PURPOSE:    Add a greylisting statement to Exim 4 configuration file
+# PURPOSE:    Add a greylisting statement to Exim 4 configuration file
 ########################################################################
 
-from sys       import version, stdin, stderr, argv, exit
-from os.path   import isdir, join, exists
-from os        import listdir, spawnl, P_WAIT
-from re        import compile
+from sys import version, stdin, stderr, argv, exit
+from os.path import isdir, join, exists
+from os import listdir, spawnl, P_WAIT
+from re import compile
 
-### Ensure that we can run this program
+# Ensure that we can run this program
 if version < "3.6":
     stderr.write("This program requires Python 3.0 or newer\n")
     exit(1)
 
 
-### What files/ACLs do we want to edit by default?
+# What files/ACLs do we want to edit by default?
 exim4conf_default_places = (
     ("/etc/exim4/exim4.conf.template",                   "acl_check_rcpt"),
     ("/etc/exim4/exim4.conf.template",                   "acl_check_data"),
@@ -24,20 +24,20 @@ exim4conf_default_places = (
     ("/etc/exim4/conf.d/acl/40_exim4-config_check_data", "acl_check_data"))
 
 
-### Words that separate blocks in the Exim 4 configuation file
+# Words that separate blocks in the Exim 4 configuation file
 exim4conf_blocks = [
     "begin", "accept", "defer", "deny", "discard", "drop", "require", "warn",
     ".ifdef", ".ifndef", ".else", ".endif"]
 
-### What blocks do we remove when unconfiguring greylistd?
-### Every line in the block must match at least one item in this list,
-### and every item in the list must match at least one line in the block
-exim4conf_remove_block = [ '^\s*defer',  '/var/run/greylistd/socket' ]
+# What blocks do we remove when unconfiguring greylistd?
+# Every line in the block must match at least one item in this list,
+# and every item in the list must match at least one line in the block
+exim4conf_remove_block = ['^\s*defer',  '/var/run/greylistd/socket']
 
 
-### What text do we add to which ACLs?
+# What text do we add to which ACLs?
 exim4conf_texts = {
-    "rcpt" : '''  # greylistd(8) configuration follows.
+    "rcpt": '''  # greylistd(8) configuration follows.
   # This statement has been added by "greylistd-setup-exim4",
   # and can be removed by running "greylistd-setup-exim4 remove".
   # Any changes you make here will then be lost.
@@ -102,7 +102,7 @@ exim4conf_texts = {
 
 ''',
 
-    "data" : '''  # greylistd(8) configuration follows.
+    "data": '''  # greylistd(8) configuration follows.
   # This statement has been added by "greylistd-setup-exim4",
   # and can be removed by running "greylistd-setup-exim4 remove".
   # Any changes you make here will then be lost.
@@ -153,28 +153,26 @@ exim4conf_texts = {
 
 
 '''
-    }
-
+}
 
 
 class RunException (Exception):
     pass
 
 
-def find_block (lines, decl, rxList, commentPfx="#", blocks=exim4conf_blocks):
+def find_block(lines, decl, rxList, commentPfx="#", blocks=exim4conf_blocks):
     startComment = None
-    startBlock   = None
-    region       = None
-    currentDecl  = None
-    rxDecl       = compile(r"^\s*(\w+):")
+    startBlock = None
+    region = None
+    currentDecl = None
+    rxDecl = compile(r"^\s*(\w+):")
 
-    rxFound      = {}
+    rxFound = {}
     for rx in rxList:
         rxFound[compile(rx)] = False
 
-
     for index in range(len(lines)):
-        line  = lines[index].strip()
+        line = lines[index].strip()
 
         if not line:
             pass
@@ -188,8 +186,8 @@ def find_block (lines, decl, rxList, commentPfx="#", blocks=exim4conf_blocks):
                 return region
 
             startComment = None
-            startBlock   = None
-            currentDecl  = rxDecl.search(line).group(1)
+            startBlock = None
+            currentDecl = rxDecl.search(line).group(1)
 
         elif currentDecl == decl:
             if line.split()[0] in blocks:
@@ -213,7 +211,6 @@ def find_block (lines, decl, rxList, commentPfx="#", blocks=exim4conf_blocks):
 
             startComment = None
 
-
         if (startBlock is None) or not min(rxFound.values()):
             region = None
 
@@ -223,7 +220,7 @@ def find_block (lines, decl, rxList, commentPfx="#", blocks=exim4conf_blocks):
     return region
 
 
-def exim4_deconfigure (lines, aclname, options):
+def exim4_deconfigure(lines, aclname, options):
     region = find_block(lines, aclname, exim4conf_remove_block)
 
     if region:
@@ -233,7 +230,7 @@ def exim4_deconfigure (lines, aclname, options):
         raise RunException("Not Configured")
 
 
-def exim4_configure (lines, aclname, options):
+def exim4_configure(lines, aclname, options):
     if find_block(lines, aclname, exim4conf_remove_block):
         raise RunException("Already Configured")
 
@@ -246,26 +243,25 @@ def exim4_configure (lines, aclname, options):
                 break
         else:
             raise RunException(("I cannot guess what type of ACL '%s' is.\n"
-                   "Please supply '-acltype={rcpt|data}'.")%aclname)
+                                "Please supply '-acltype={rcpt|data}'.") % aclname)
 
     elif not acltype in exim4conf_texts:
-        raise RunException("Invalid ACL type: '%s'"%acltype)
-
+        raise RunException("Invalid ACL type: '%s'" % acltype)
 
     if "netmask" in options:
         try:
             netmask = int(options["netmask"])
         except:
-            nmstring=options["netmask"]
-            raise RuntimeError("Invalid netmask size: '%(nmstring)s'"%vars())
-### org           raise "Invalid netmask size: '%s'"%options["netmask"]
+            nmstring = options["netmask"]
+            raise RuntimeError("Invalid netmask size: '%(nmstring)s'" % vars())
+# org           raise "Invalid netmask size: '%s'"%options["netmask"]
 
-        hostaddress="${mask:$sender_host_address/%s}"%options["netmask"]
+        hostaddress = "${mask:$sender_host_address/%s}" % options["netmask"]
 
     else:
-        hostaddress="$sender_host_address"
+        hostaddress = "$sender_host_address"
 
-    text = exim4conf_texts[acltype]%hostaddress
+    text = exim4conf_texts[acltype] % hostaddress
 
     for lineno in range(len(lines)):
         if lines[lineno].strip().startswith(aclname + ":"):
@@ -273,14 +269,14 @@ def exim4_configure (lines, aclname, options):
             return "OK"
 
     else:
-        raise RunException("Could not find ACL '%s'"%aclname)
+        raise RunException("Could not find ACL '%s'" % aclname)
 
 
-def run (command, *args):
+def run(command, *args):
     return (spawnl(P_WAIT, command, command.split("/")[-1], *args) == 0)
 
 
-def exim4_setup (filename, aclname, function, options, doupdate):
+def exim4_setup(filename, aclname, function, options, doupdate):
     try:
         fp = open(filename, "r")
         lines = fp.readlines()
@@ -297,26 +293,22 @@ def exim4_setup (filename, aclname, function, options, doupdate):
     except IOError as e:
         ok, message = False, str(e)
 
-
     except RunException as e:
         ok, message = False, str(e)
-
 
     if not "quiet" in options:
         if len(filename) > 40:
             name = "..." + filename[-37:]
         else:
             name = filename.ljust(40)
-        stderr.write("%s: %s\n"%(name, message))
-
+        stderr.write("%s: %s\n" % (name, message))
 
     return ok or ("no-fail" in options)
 
 
-
-def exim4_default_setup (description, function, options, doupdate):
+def exim4_default_setup(description, function, options, doupdate):
     if not "quiet" in options:
-        stderr.write("%s\n"%description)
+        stderr.write("%s\n" % description)
 
     results = {}
 
@@ -327,15 +319,12 @@ def exim4_default_setup (description, function, options, doupdate):
     return min(results.values())
 
 
-
-
-
-def usage (progname, message=None):
+def usage(progname, message=None):
     if message:
-        stderr.write("%s: %s\n"%(progname, message))
+        stderr.write("%s: %s\n" % (progname, message))
 
     stderr.write("\n".join([
-        "Usage: %s {add|remove|test} [options] [<file> <acl_name>]"%progname,
+        "Usage: %s {add|remove|test} [options] [<file> <acl_name>]" % progname,
         "",
         "  Add, remove or test for greylistd support in the given Exim 4",
         "  configuration file and Access Control List (ACL).",
@@ -367,10 +356,10 @@ def usage (progname, message=None):
 
 
 progname = None
-action   = None
+action = None
 filename = None
-aclname  = None
-options  = {}
+aclname = None
+options = {}
 
 
 for arg in argv:
@@ -414,7 +403,7 @@ elif action in (None, "help"):
     usage(progname)
 
 else:
-    usage(progname, "Invalid action: %s"%action)
+    usage(progname, "Invalid action: %s" % action)
 
 
 if aclname:

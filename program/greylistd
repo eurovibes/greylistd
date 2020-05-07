@@ -1,45 +1,46 @@
 #!/usr/bin/python3
 # SPDX-License-Identifier: GPL-2.0-or-later
 ########################################################################
-### FILE:	greylistd.py
-### PURPOSE:	Simple greylisting daemon.  See "greylistd(8)".
-###		For an introduction to greylisting, see:
-###		http://projects.puremagic.com/greylisting/
-###
-###		This program listens for connections on a UNIX domain
-###		socket, presumably from an MTA such as Exim.  Nominally,
-###		it reads an identifier (referred to as a "triplet"),
-###		and returns a single word ("white" or "grey") depending
-###             on prior knowledge of said identifier.
-###
-### Copyright (C) 2004, Tor Slettnes <tor@slett.net>
-###               2006, Sven Anderson <sven(at)anderson.de>
+# FILE:	greylistd.py
+# PURPOSE:	Simple greylisting daemon.  See "greylistd(8)".
+# For an introduction to greylisting, see:
+# http://projects.puremagic.com/greylisting/
+#
+# This program listens for connections on a UNIX domain
+# socket, presumably from an MTA such as Exim.  Nominally,
+# it reads an identifier (referred to as a "triplet"),
+# and returns a single word ("white" or "grey") depending
+# on prior knowledge of said identifier.
+#
+# Copyright (C)
+# 2004, Tor Slettnes <tor@slett.net>
+# 2006, Sven Anderson <sven(at)anderson.de>
 ########################################################################
 
-from time         import time, ctime, localtime, strftime
-from socket       import socket, AF_UNIX, SOCK_STREAM, error as SocketError, gethostname
-from os           import remove, rename, chmod, chown, getuid, getpid, isatty
-from pwd          import getpwnam
-from grp          import getgrnam
-from os.path      import join, exists
-from sys          import version as PyVersion, argv, stdout, stderr, exit, exc_info
-from signal       import signal, SIGTERM, SIGHUP, SIGUSR1, SIG_IGN, SIG_DFL
-from syslog       import openlog, syslog, LOG_NOTICE, LOG_WARNING, LOG_ERR
-from select       import select
-from inspect      import getfullargspec
+from time import time, ctime, localtime, strftime
+from socket import socket, AF_UNIX, SOCK_STREAM, error as SocketError, gethostname
+from os import remove, rename, chmod, chown, getuid, getpid, isatty
+from pwd import getpwnam
+from grp import getgrnam
+from os.path import join, exists
+from sys import version as PyVersion, argv, stdout, stderr, exit, exc_info
+from signal import signal, SIGTERM, SIGHUP, SIGUSR1, SIG_IGN, SIG_DFL
+from syslog import openlog, syslog, LOG_NOTICE, LOG_WARNING, LOG_ERR
+from select import select
+from inspect import getfullargspec
 
 
-### Ensure that we can run this program
+# Ensure that we can run this program
 if PyVersion < "3.6":
     stderr.write("This program requires Python 3.6 or newer\n")
     exit(1)
 
 
-### Configuration file sections, items
+# Configuration file sections, items
 (DATA, STATEFILE, TRIPLETFILE, SAVETRIPLETS, UPDATEINTERVAL,
-    SINGLECHECK, SINGLEUPDATE ) = (
+    SINGLECHECK, SINGLEUPDATE) = (
     "data", "statefile", "tripletfile", "savetriplets", "update",
-    "singlecheck", "singleupdate" )
+    "singlecheck", "singleupdate")
 
 (SOCKET, SOCKPATH, SOCKOWNER, SOCKMODE) = (
     "socket", "path", "owner", "mode")
@@ -48,61 +49,62 @@ if PyVersion < "3.6":
     "timeouts", "retryMin", "retryMax", "expire")
 
 
-### Defaults for various configuration items
-conffile   = "/etc/greylistd/config"
+# Defaults for various configuration items
+conffile = "/etc/greylistd/config"
 
-config     = { DATA       : { STATEFILE      : "/var/lib/greylistd/states",
-                              TRIPLETFILE    : "/var/lib/greylistd/triplets",
-                              SAVETRIPLETS   : True,
-                              SINGLECHECK    : False,
-                              SINGLEUPDATE   : False,
-                              UPDATEINTERVAL : 300 },
+config = {DATA: {STATEFILE: "/var/lib/greylistd/states",
+                 TRIPLETFILE: "/var/lib/greylistd/triplets",
+                 SAVETRIPLETS: True,
+                 SINGLECHECK: False,
+                 SINGLEUPDATE: False,
+                 UPDATEINTERVAL: 300},
 
-               SOCKET     : { SOCKPATH       : "/var/run/greylistd/socket",
-                              SOCKOWNER      : "greylist:greylist",
-                              SOCKMODE       : "0660" },
+          SOCKET: {SOCKPATH: "/var/run/greylistd/socket",
+                   SOCKOWNER: "greylist:greylist",
+                   SOCKMODE: "0660"},
 
-               TIMEOUTS   : { RETRYMIN       : 60 * 60,
-                              RETRYMAX       : 60 * 60 * 8,
-                              EXPIRE         : 60 * 60 * 24 * 60 } }
+          TIMEOUTS: {RETRYMIN: 60 * 60,
+                     RETRYMAX: 60 * 60 * 8,
+                     EXPIRE: 60 * 60 * 24 * 60}}
 
 
-### Lists/states
-(WHITE, GREY, BLACK, UNSEEN)   = ("white", "grey", "black", "unseen")
+# Lists/states
+(WHITE, GREY, BLACK, UNSEEN) = ("white", "grey", "black", "unseen")
 
-### Additional data file sections/items
+# Additional data file sections/items
 (STATS, START, LASTSAVE) = ("statistics", "start", "lastsave")
 
-### Greylist data
-data       = { WHITE      : {},
-               GREY       : {},
-               BLACK      : {},
-               STATS      : { WHITE   : 0,
-                              GREY    : 0,
-                              BLACK   : 0,
-                              START   : 0,
-                              LASTSAVE: 0 }}
+# Greylist data
+data = {WHITE: {},
+        GREY: {},
+        BLACK: {},
+        STATS: {WHITE: 0,
+                GREY: 0,
+                BLACK: 0,
+                START: 0,
+                LASTSAVE: 0}}
 
-### Type conversions for items in data file
-datatypes  = { WHITE : (int, (int, int, int)),
-               GREY  : (int, (int, int, int)),
-               BLACK : (int, (int, int, int)) }
+# Type conversions for items in data file
+datatypes = {WHITE: (int, (int, int, int)),
+             GREY: (int, (int, int, int)),
+             BLACK: (int, (int, int, int))}
 
-### Index of elements in data
+# Index of elements in data
 (IDX_LAST, IDX_FIRST, IDX_COUNT) = range(3)
 
-### Unhashed/original data not yet saved to disk
+# Unhashed/original data not yet saved to disk
 newTriplets = {}
 
 
 class RunException (Exception):
     pass
 
+
 class CommandError (RunException):
     pass
 
 
-def expireKeys (now):
+def expireKeys(now):
     for (listKey, timeoutKey) in ((GREY,  RETRYMAX),
                                   (WHITE, EXPIRE),
                                   (BLACK, EXPIRE)):
@@ -111,7 +113,7 @@ def expireKeys (now):
                 del data[listKey][dataKey]
 
 
-def listStatus (searchkey):
+def listStatus(searchkey):
     for listkey in datatypes:
         if searchkey in data[listkey]:
             return listkey
@@ -119,19 +121,18 @@ def listStatus (searchkey):
     return None
 
 
-
-def log (message, priority=LOG_NOTICE):
+def log(message, priority=LOG_NOTICE):
     if isatty(stderr.fileno()):
-        stderr.write("%s\n"%(message,))
+        stderr.write("%s\n" % (message,))
     else:
         syslog(priority, message)
 
 
-def duration (secs):
+def duration(secs):
     plural = ("", "s")
 
     if secs < 60:
-        return "%d second%s"%(secs, plural[secs > 1])
+        return "%d second%s" % (secs, plural[secs > 1])
 
     elif secs < 60 * 60:
         (mins, secs) = (secs / 60, secs % 60)
@@ -158,12 +159,11 @@ def duration (secs):
                                    plural[hrs > 1] or "")
 
 
-
 def typeConvert(typeobject, string):
     if type(typeobject) in (tuple, list):
-        typelist   = typeobject
+        typelist = typeobject
         stringlist = string.split(None, len(typeobject) - 1)
-        valuelist  = []
+        valuelist = []
 
         for idx, typeobject in enumerate(typelist):
             word = stringlist[idx]
@@ -187,20 +187,18 @@ def typeConvert(typeobject, string):
             elif string.lower() in ("no", "false", "off"):
                 return False
             else:
-                raise ValueError("Not a valid boolean: '%s'"%string)
+                raise ValueError("Not a valid boolean: '%s'" % string)
 
     else:
         return(typeobject(string))
 
 
-
-
-def loadFromFile (datafile, dictionary, typelist=None):
+def loadFromFile(datafile, dictionary, typelist=None):
     try:
-        fp      = open(datafile)
+        fp = open(datafile)
         section = None
 
-        logPfx  = 'In %s:'%datafile
+        logPfx = 'In %s:' % datafile
 
         for line in fp:
             line = line.strip()
@@ -212,7 +210,7 @@ def loadFromFile (datafile, dictionary, typelist=None):
                 section = line[1:line.find(']')].strip().lower()
 
                 if not section in dictionary:
-                    log("%s Invalid or obsolete section: [%s]"%
+                    log("%s Invalid or obsolete section: [%s]" %
                         (logPfx, section))
                     section = None
 
@@ -223,62 +221,61 @@ def loadFromFile (datafile, dictionary, typelist=None):
                     keytype, valuetype = typelist[section]
 
                 elif key in dictionary[section]:
-                    keytype      = str
-                    valuetype    = dictionary[section][key]
+                    keytype = str
+                    valuetype = dictionary[section][key]
                 else:
-                    log("%s Invalid or obsolete key: [%s] %s"%
+                    log("%s Invalid or obsolete key: [%s] %s" %
                         (logPfx, section, key))
                     continue
 
                 try:
-                    key                      = typeConvert(keytype, key)
+                    key = typeConvert(keytype, key)
                     dictionary[section][key] = typeConvert(valuetype, data)
 
                 except ValueError:
-                    log("%s Invalid value for [%s] %s: '%s'"%
+                    log("%s Invalid value for [%s] %s: '%s'" %
                         (logPfx, section, key, data))
 
                 except IndexError:
-                    log("%s Too few values for [%s] %s (%d, should be %d)"%
+                    log("%s Too few values for [%s] %s (%d, should be %d)" %
                         (logPfx, section, key, len(stringlist), len(typelist)))
 
             elif line:
-                log("%s Invalid line: '%s'"%(logPfx, line))
+                log("%s Invalid line: '%s'" % (logPfx, line))
 
         fp.close()
 
     except IOError as e:
-        raise RunException("Cannot read from '%s': %s"%(datafile, str(e)))
+        raise RunException("Cannot read from '%s': %s" % (datafile, str(e)))
 
 
-
-def saveToFile (datafile, dictionary, perm=0o600):
+def saveToFile(datafile, dictionary, perm=0o600):
     try:
         fp = open(datafile, 'w')
 
         chmod(datafile, perm)
 
         for (section, subdict) in dictionary.items():
-            fp.write("[%s]\n"%section)
+            fp.write("[%s]\n" % section)
 
             for (key, value) in subdict.items():
                 if type(value) in (list, tuple):
                     value = " ".join(map(str, value))
-                fp.write("%s = %s\n"%(key, value))
+                fp.write("%s = %s\n" % (key, value))
 
             fp.write("\n")
 
         fp.close()
 
     except IOError as e:
-        raise RunException("Cannot write to %s: %s"%(datafile, str(e)))
+        raise RunException("Cannot write to %s: %s" % (datafile, str(e)))
 
     except OSError as e:
-        raise RunException("Cannot set mode 0%o on %s: %s"%(perm, datafile, str(e)))
+        raise RunException("Cannot set mode 0%o on %s: %s" %
+                           (perm, datafile, str(e)))
 
 
-
-def loadConfigAndData ():
+def loadConfigAndData():
     now = int(time())
 
     try:
@@ -294,28 +291,28 @@ def loadConfigAndData ():
     expireKeys(now)
     data[STATS][LASTSAVE] = now
 
-def saveData (datafile):
-    ### Save data hashes and timestamps
-    tempfile = "%s.%s"%(datafile, getpid())
+
+def saveData(datafile):
+    # Save data hashes and timestamps
+    tempfile = "%s.%s" % (datafile, getpid())
 
     saveToFile(tempfile, data)
 
     try:
         rename(tempfile, datafile)
     except OSError as e:
-        raise RunException("Cannot rename %s to %s: %s"%(tempfile,
-                                                         datafile, str(e)))
+        raise RunException("Cannot rename %s to %s: %s" % (tempfile,
+                                                           datafile, str(e)))
 
 
-
-def syncTriplets (datafile, perm=0o600):
+def syncTriplets(datafile, perm=0o600):
     source = datafile
-    target = "%s.%s"%(source, getpid())
+    target = "%s.%s" % (source, getpid())
 
     try:
-        infile  = open(source, "r")
+        infile = open(source, "r")
     except IOError:
-        infile  = None
+        infile = None
 
     try:
         outfile = open(target, "w")
@@ -326,7 +323,7 @@ def syncTriplets (datafile, perm=0o600):
             for line in infile:
                 try:
                     (key, value) = line.split(" = ", 1)
-                    key          = int(key)
+                    key = int(key)
 
                     if listStatus(key) and not key in newTriplets:
                         outfile.write(line)
@@ -336,17 +333,17 @@ def syncTriplets (datafile, perm=0o600):
 
         for (key, data) in newTriplets.items():
             if listStatus(key):
-                outfile.write("%d = %s\n"%(key, data))
+                outfile.write("%d = %s\n" % (key, data))
 
         newTriplets.clear()
         outfile.close()
 
     except IOError as e:
-        raise RunException("Could not write to %s: %s"%(target, str(e)))
+        raise RunException("Could not write to %s: %s" % (target, str(e)))
 
     except OSError as e:
-        raise RunException("Cannot set mode 0%o on %s: %s"%(perm, target, str(e)))
-
+        raise RunException("Cannot set mode 0%o on %s: %s" %
+                           (perm, target, str(e)))
 
     if infile:
         infile.close()
@@ -354,65 +351,64 @@ def syncTriplets (datafile, perm=0o600):
     try:
         rename(target, source)
     except OSError as e:
-        raise RunException("Could not rename %s to %s: %s"%(target, source, str(e)))
+        raise RunException("Could not rename %s to %s: %s" %
+                           (target, source, str(e)))
 
 
-
-def listTriplets (fp, socket, options):
+def listTriplets(fp, socket, options):
     parseErrors = False
-    firstPass   = True
-    listformat  = "  %-20s %5s  %s\n"
+    firstPass = True
+    listformat = "  %-20s %5s  %s\n"
 
     for listkey in (options or datatypes):
         if not listkey in data:
-            raise CommandError("Invalid list: %s"%listkey)
+            raise CommandError("Invalid list: %s" % listkey)
 
         elif not data[listkey]:
             continue
 
         listdata = data[listkey]
-        line     = "%slist data:"%listkey.capitalize()
-        dash     = "="*len(line)
-        out = "\n%s\n%s\n"%(line, dash)
+        line = "%slist data:" % listkey.capitalize()
+        dash = "="*len(line)
+        out = "\n%s\n%s\n" % (line, dash)
         client.send(out.encode())
-        out = listformat%("Last Seen", "Count", "Data")
+        out = listformat % ("Last Seen", "Count", "Data")
         client.send(out.encode())
 
         fp.seek(0)
         for line in fp:
             try:
                 (key, value) = line.split(" = ", 1)
-                key          = int(key)
+                key = int(key)
 
                 if key in listdata:
                     last, first, num = listdata[key]
                     ldate = strftime("%Y-%m-%d %H:%M:%S", localtime(last))
-                    out = listformat%(ldate, num, value.strip())
+                    out = listformat % (ldate, num, value.strip())
                     client.send(out.encode())
 
             except ValueError:
                 if not parseErrors:
-                    log("While reading triplets from %s:"%
+                    log("While reading triplets from %s:" %
                         (config[DATA][TRIPLETFILE],))
                     parseErrors = True
 
                 if firstPass:
-                    log("Invalid line: '%s'"%line)
+                    log("Invalid line: '%s'" % line)
 
         firstPass = False
 
 
-
-def do_add (options, key):
+def do_add(options, key):
     if not options:
         state = WHITE
     elif options[0] in datatypes:
         state = options[0]
     else:
-        raise CommandError("No such list: '%s'"%options[0])
+        raise CommandError("No such list: '%s'" % options[0])
 
-    now       = int(time())
-    oldstate  = listStatus(key)
+    now = int(time())
+    oldstate = listStatus(key)
 
     if state == oldstate:
         (lastseen, firstseen, count) = data[state][key]
@@ -424,19 +420,19 @@ def do_add (options, key):
             del data[oldstate][key]
 
     data[state][key] = (now, firstseen, count+1)
-    return "Added to %slist"%state
+    return "Added to %slist" % state
 
 
-
-def do_delete (options, key):
+def do_delete(options, key):
     listkey = listStatus(key)
     if listkey:
         del data[listkey][key]
-        return "Removed from %slist"%listkey
+        return "Removed from %slist" % listkey
     else:
         raise CommandError("Not found")
 
-def do_status (options, args):
+
+def do_status(options, args):
     if config[DATA][SINGLECHECK]:
         key = hash(args[0])
     else:
@@ -446,28 +442,29 @@ def do_status (options, args):
         state = UNSEEN
     return state
 
-def do_check (options, args, update=False):
+
+def do_check(options, args, update=False):
     if options:
         truthtest = options[0]
         if not truthtest in datatypes:
-            raise CommandError("'%s' is not a known state"%truthtest)
+            raise CommandError("'%s' is not a known state" % truthtest)
     else:
         truthtest = None
 
-    now       = int(time())
-    ### according to #375504 this call to expireKeys() can be
-    ### removed here, expiration takes place when periodically
-    ### saving to disk
-    ### #375504: expireKeys(now)
+    now = int(time())
+    # according to #375504 this call to expireKeys() can be
+    # removed here, expiration takes place when periodically
+    # saving to disk
+    # 375504: expireKeys(now)
     state = None
 
     if config[DATA][SINGLECHECK]:
         key = hash(args[0])
-        state     = listStatus(key)
+        state = listStatus(key)
 
     if state is None:
         key = hash(" ".join(args))
-        state     = listStatus(key)
+        state = listStatus(key)
 
     if state is None:
         state = GREY
@@ -484,7 +481,7 @@ def do_check (options, args, update=False):
                 newTriplets[key] = args[0]
 
     if update:
-        do_add([ state ], key)
+        do_add([state], key)
 
     if truthtest:
         return (state == truthtest) and "true" or "false"
@@ -492,64 +489,59 @@ def do_check (options, args, update=False):
         return state
 
 
-
-def do_update (options, args):
+def do_update(options, args):
     return do_check(options, args, update=True)
 
 
-
-def do_stats ():
-    text      = []
-    now       = int(time())
-    stats     = data[STATS]
+def do_stats():
+    text = []
+    now = int(time())
+    stats = data[STATS]
     starttime = stats.get(START, None)
     expireKeys(now)
 
-
     if starttime:
-        title = "Statistics since %s (%s ago)"%(
+        title = "Statistics since %s (%s ago)" % (
             ctime(starttime), duration(now - starttime))
     else:
         title = "Statistics"
 
     text.append(title)
     text.append("-" * len(title))
-    hits    = {}
-    items   = {}
+    hits = {}
+    items = {}
 
     for listkey in datatypes:
         items[listkey] = len(data[listkey])
-        hits[listkey]  = 0
+        hits[listkey] = 0
         for (key, value) in data[listkey].items():
             (lastseen, firstseen, count) = value
             hits[listkey] += count
 
-
     for listkey in datatypes:
-        hitdigits  = len(str(max(hits.values())))
+        hitdigits = len(str(max(hits.values())))
         itemdigits = len(str(max(items.values())))
 
-        text.append("%s items, matching %s requests, are currently %slisted"%
+        text.append("%s items, matching %s requests, are currently %slisted" %
                     (str(items[listkey]).rjust(itemdigits),
                      str(hits[listkey]).rjust(hitdigits),
                      listkey))
 
-
-    previousGrey  = stats[GREY] - len(data[GREY])
-    expiredGrey   = previousGrey - stats[WHITE]
+    previousGrey = stats[GREY] - len(data[GREY])
+    expiredGrey = previousGrey - stats[WHITE]
 
     if previousGrey:
         digits = len(str(previousGrey))
 
         text.append("")
-        text.append("Of %s items that were initially greylisted:"%
+        text.append("Of %s items that were initially greylisted:" %
                     str(previousGrey).rjust(digits))
 
-        text.append(" - %s (%5.1f%%) became whitelisted"%
+        text.append(" - %s (%5.1f%%) became whitelisted" %
                     (str(stats[WHITE]).rjust(digits),
                      100.0 * stats[WHITE] / previousGrey))
 
-        text.append(" - %s (%5.1f%%) expired from the greylist"%
+        text.append(" - %s (%5.1f%%) expired from the greylist" %
                     (str(expiredGrey).rjust(digits),
                      100.0 * expiredGrey / previousGrey))
 
@@ -557,14 +549,12 @@ def do_stats ():
     return "\n".join(text)
 
 
-
-def do_mrtg ():
-    text      = []
-    now       = int(time())
-    stats     = data[STATS]
+def do_mrtg():
+    text = []
+    now = int(time())
+    stats = data[STATS]
     starttime = stats.get(START, None)
     expireKeys(now)
-
 
     text.append(str(stats[GREY]))
     text.append(str(stats[WHITE]))
@@ -576,8 +566,7 @@ def do_mrtg ():
     return "\n".join(text)
 
 
-
-def do_list (options, socket):
+def do_list(options, socket):
     if not config[DATA][TRIPLETFILE] or not config[DATA][SAVETRIPLETS]:
         raise CommandError("Original triplet data is not retained.")
 
@@ -589,17 +578,17 @@ def do_list (options, socket):
         infile.close()
 
     except IOError as e:
-        raise CommandError("Cannot read from '%s': %s\n"%
+        raise CommandError("Cannot read from '%s': %s\n" %
                            (str(config[DATA][TRIPLETFILE]), str(e)))
 
 
-def do_clear (options):
+def do_clear(options):
     for listkey in (options or datatypes):
         if listkey in data:
             data[listkey].clear()
             data[STATS][listkey] = 0
         else:
-            raise CommandError("Invalid list: '%s'"%listkey)
+            raise CommandError("Invalid list: '%s'" % listkey)
 
     if not options:
         data[STATS][START] = int(time())
@@ -607,20 +596,20 @@ def do_clear (options):
     return "data and statistics cleared"
 
 
-def do_reload ():
+def do_reload():
     do_save()
     loadConfigAndData()
     return "configuration and data reloaded"
 
 
-def do_save ():
+def do_save():
     now = int(time())
     expireKeys(now)
 
-    ### Save data hashes and timestamps
+    # Save data hashes and timestamps
     saveData(config[DATA][STATEFILE])
 
-    ### Save unhashed triplets
+    # Save unhashed triplets
     if newTriplets:
         syncTriplets(config[DATA][TRIPLETFILE])
 
@@ -629,14 +618,13 @@ def do_save ():
     return "greylistd data has been saved"
 
 
-
-def nodata ():
+def nodata():
     raise CommandError("No data received")
 
 
-def runCommand (line, client):
-    now     = int(time())
-    words   = line.lower().split()
+def runCommand(line, client):
+    now = int(time())
+    words = line.lower().split()
     options = []
 
     if not words:
@@ -646,13 +634,14 @@ def runCommand (line, client):
     else:
         function = do_update
 
-    args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations =  getfullargspec(function)
+    args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = getfullargspec(
+        function)
 
     while words and words[0].startswith("-"):
         options.append(words.pop(0).lstrip("-"))
 
     arglist = []
-    key     = None
+    key = None
     useargs = False
 
     for arg in args:
@@ -686,16 +675,14 @@ def runCommand (line, client):
 
         return function(*tuple(arglist)) or ""
 
-
     except RunException as e:
         if not isinstance(e, CommandError):
             log(str(e))
 
-        return "error: %s"%str(e).replace("\n", "\n       ")
+        return "error: %s" % str(e).replace("\n", "\n       ")
 
 
-
-def createSocket (path, owner, mode):
+def createSocket(path, owner, mode):
     sock = socket(AF_UNIX, SOCK_STREAM)
     sock.bind(path)
 
@@ -712,30 +699,33 @@ def createSocket (path, owner, mode):
                 (name, passwd, gid, members) = getgrnam(group)
 
         except KeyError:
-            raise RunException("Invalid owner specified in configuration file: %s: %s"%owner)
+            raise RunException(
+                "Invalid owner specified in configuration file: %s" % owner)
 
         try:
             chown(path, uid, gid)
         except OSError as e:
-            raise RunException("Could not change ownership of socket %s: %s"%(path, str(e)))
+            raise RunException(
+                "Could not change ownership of socket %s: %s" % (path, str(e)))
 
     try:
         chmod(path, int(mode, 8))
 
     except ValueError:
-        raise RunException("Specified socket mode '%s' is not a valid octal number"%mode)
+        raise RunException(
+            "Specified socket mode '%s' is not a valid octal number" % mode)
     except OSError as e:
-        raise RunException("Could not set mode 0%o on socket %s: %s"%(mode, path, str(e)))
+        raise RunException(
+            "Could not set mode 0%o on socket %s: %s" % (mode, path, str(e)))
 
     sock.listen(5)
     return sock
 
 
-
-def startup ():
+def startup():
     global listener, sockets
     listener = None
-    sockets  = []
+    sockets = []
 
     signal(SIGTERM, term)
     signal(SIGHUP,  hangup)
@@ -747,7 +737,8 @@ def startup ():
         listener = createSocket(**config[SOCKET])
 
     except SocketError as e:
-        log("Could not bind/listen to socket %s: %s"%(config[SOCKET][SOCKPATH], str(e)))
+        log("Could not bind/listen to socket %s: %s" %
+            (config[SOCKET][SOCKPATH], str(e)))
         exit(-1)
 
     except RunException as e:
@@ -755,12 +746,10 @@ def startup ():
         cleanup(False)
         exit(-1)
 
-    sockets  = [ listener ]
+    sockets = [listener]
 
 
-
-
-def cleanup (save=True):
+def cleanup(save=True):
     if exists(config[SOCKET][SOCKPATH]):
         remove(config[SOCKET][SOCKPATH])
 
@@ -768,13 +757,14 @@ def cleanup (save=True):
         do_save()
 
 
-def term (signum=None, frame=None):
+def term(signum=None, frame=None):
     cleanup()
     exit(0)
 
 
-def hangup (signum=None, frame=None):
+def hangup(signum=None, frame=None):
     do_reload()
+
 
 if len(argv) > 1:
     conffile = argv[1]
@@ -797,7 +787,6 @@ try:
             except RunException as e:
                 log(str(e))
 
-
         elif inlist[0] is listener:
             (client, addr) = listener.accept()
             sockets.append(client)
@@ -811,7 +800,7 @@ try:
                 client.send(reply.encode())
 
             except SocketError as e:
-                log("Socket error: %s"%str(e))
+                log("Socket error: %s" % str(e))
 
             client.close()
             sockets.remove(client)
@@ -826,14 +815,14 @@ except KeyboardInterrupt:
 except Exception as e:
     (type, value, tb) = exc_info()
     while tb.tb_next:
-        tb       = tb.tb_next
+        tb = tb.tb_next
 
-    frame    = tb.tb_frame
-    code     = frame.f_code
-    line     = tb.tb_lineno
+    frame = tb.tb_frame
+    code = frame.f_code
+    line = tb.tb_lineno
     filename = code.co_filename
 
-    log("### Fatal event in %s, line %d:"%(filename, line), LOG_ERR)
-    log(">>> %s"%e, LOG_ERR)
+    log("### Fatal event in %s, line %d:" % (filename, line), LOG_ERR)
+    log(">>> %s" % e, LOG_ERR)
 
     cleanup(save=False)

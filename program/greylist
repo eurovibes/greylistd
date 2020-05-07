@@ -1,47 +1,47 @@
 #!/usr/bin/python3
 # SPDX-License-Identifier: GPL-2.0-or-later
 ########################################################################
-### FILE:	greylist
-### PURPOSE:	Command line interface to "greylistd(8)"
-###
-### Copyright (C) 2004, Tor Slettnes <tor@slett.net>
+# FILE:	greylist
+# PURPOSE:	Command line interface to "greylistd(8)"
+#
+# Copyright (C) 2004, Tor Slettnes <tor@slett.net>
 ########################################################################
 
-from socket       import socket, AF_UNIX, SOCK_STREAM
-from sys          import argv, stdout, stderr, exit
+from socket import socket, AF_UNIX, SOCK_STREAM
+from sys import argv, stdout, stderr, exit
 from configparser import ConfigParser
 
 
-### Exit codes based on responses from greylistd
-exitcodes = { "error:" : -1,
-              "white"  : 0,
-              "grey"   : 1,
-              "black"  : 2,
-              "true"   : 0,
-              "false"  : 1 }
+# Exit codes based on responses from greylistd
+exitcodes = {"error:": -1,
+             "white": 0,
+             "grey": 1,
+             "black": 2,
+             "true": 0,
+             "false": 1}
 
 
-### File paths
+# File paths
 conffile = "/etc/greylistd/config"
 sockfile = "/var/run/greylistd/socket"
 
-### Commands that can be given over the socket
+# Commands that can be given over the socket
 commands = ("add", "delete", "check", "update",
             "stats", "list",  "clear", "save",
             "reload", "mrtg", "status")
 
 
-def usage (progname, message=None):
+def usage(progname, message=None):
     if message:
         out = stderr
-        out.write("%s: %s\n\n"%(progname, message))
+        out.write("%s: %s\n\n" % (progname, message))
     else:
         out = stdout
         out.write("Command line interface to \"greylistd(8)\"\n\n")
 
     out.write("\n".join([
-        "Usage: %s --help"%progname,
-        "       %s <action>"%progname,
+        "Usage: %s --help" % progname,
+        "       %s <action>" % progname,
         "",
         "Actions:",
         "  add [--white|--grey|--black] <data> ...",
@@ -96,7 +96,7 @@ if action in ("-h", "-help", "--help", "help"):
     usage(progname)
 
 elif not action in commands:
-    usage(progname, "Invalid action: '%s'"%action)
+    usage(progname, "Invalid action: '%s'" % action)
 
 
 confParser = ConfigParser()
@@ -113,23 +113,23 @@ sock = socket(AF_UNIX, SOCK_STREAM)
 try:
     sock.connect(sockfile)
 except Exception as e:
-    stderr.write("%s: %s\n"%(sockfile, str(e)))
+    stderr.write("%s: %s\n" % (sockfile, str(e)))
     exit(-1)
 
 try:
     sock.send(" ".join(argv[1:]).encode())
 except Exception as e:
-    stderr.write("%s: %s\n"%(sockfile, str(e)))
+    stderr.write("%s: %s\n" % (sockfile, str(e)))
     exit(-1)
 
 
-stat      = True
+stat = True
 firstword = None
 
 while stat:
     stat = sock.recv(1024)
     try:
-        stdout.write("%s"%stat.decode())
+        stdout.write("%s" % stat.decode())
 
     except IOError:
         break
