@@ -117,7 +117,7 @@ except Exception as e:
     exit(-1)
 
 try:
-    sock.send(" ".join(argv[1:]).encode())
+    sock.send(" ".join(argv[1:]).encode('ascii', 'replace'))
 except Exception as e:
     stderr.write("%s: %s\n" % (sockfile, str(e)))
     exit(-1)
@@ -129,7 +129,7 @@ firstword = None
 while stat:
     stat = sock.recv(1024)
     try:
-        stdout.write("%s" % stat.decode())
+        stdout.write("%s" % stat.decode('ascii', 'replace'))
 
     except IOError:
         break

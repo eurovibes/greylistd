@@ -371,9 +371,9 @@ def listTriplets(fp, socket, options):
         line = "%slist data:" % listkey.capitalize()
         dash = "=" * len(line)
         out = "\n%s\n%s\n" % (line, dash)
-        client.send(out.encode())
+        client.send(out.encode('ascii', 'replace'))
         out = listformat % ("Last Seen", "Count", "Data")
-        client.send(out.encode())
+        client.send(out.encode('ascii', 'replace'))
 
         fp.seek(0)
         for line in fp:
@@ -385,7 +385,7 @@ def listTriplets(fp, socket, options):
                     last, first, num = listdata[key]
                     ldate = strftime("%Y-%m-%d %H:%M:%S", localtime(last))
                     out = listformat % (ldate, num, value.strip())
-                    client.send(out.encode())
+                    client.send(out.encode('ascii', 'replace'))
 
             except ValueError:
                 if not parseErrors:
@@ -795,9 +795,9 @@ try:
             client = inlist[0]
 
             try:
-                line = client.recv(16384).decode()
+                line = client.recv(16384).decode('ascii', 'replace')
                 reply = runCommand(line, client)
-                client.send(reply.encode())
+                client.send(reply.encode('ascii', 'replace'))
 
             except SocketError as e:
                 log("Socket error: %s" % str(e))
