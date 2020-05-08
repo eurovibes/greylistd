@@ -6,7 +6,7 @@ expire = 90
 [data]
 update = 10
 statefile = tmp1/states
-tripletfile = tmptriplets
+tripletfile = tmp1/triplets
 savetriplets = true
 singlecheck = false
 singleupdate = false
