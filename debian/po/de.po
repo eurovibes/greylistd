@@ -12,20 +12,20 @@ msgstr ""
 "Language-Team: de <debian-l10n-german@lists.debian.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: boolean
 #. Description
 #: ../templates:1001
 msgid "Restart Exim after adding it to the greylist group?"
-msgstr "Exim nach dem Hinzufügen zu der Greylist-Gruppe neu starten?"
+msgstr "Exim nach dem HinzufÃ¼gen zu der Greylist-Gruppe neu starten?"
 
 #. Type: boolean
 #. Description
 #: ../templates:1001
 msgid "You are using Exim 4 as your Mail Transport Agent (MTA).  Great!"
-msgstr "Sie verwenden Exim 4 als Ihr »Mail Transport Agent« (MTA). Super!"
+msgstr "Sie verwenden Exim 4 als Ihr Â»Mail Transport AgentÂ« (MTA). Super!"
 
 #. Type: boolean
 #. Description
@@ -35,16 +35,16 @@ msgid ""
 "the Exim daemon process can talk to greylistd.  However, for this change to "
 "take effect, the process must also be restarted."
 msgstr ""
-"Der »Debian-exim«-Benutzer wird zu der »greylist«-Gruppe hinzugefügt, so "
+"Der Â»Debian-eximÂ«-Benutzer wird zu der Â»greylistÂ«-Gruppe hinzugefÃ¼gt, so "
 "dass der Exim-Daemon-Prozess direkt mit Greylistd sprechen kann. Damit diese "
-"Änderung allerdings in Kraft treten kann, muss der Prozess auch neu "
+"Ã„nderung allerdings in Kraft treten kann, muss der Prozess auch neu "
 "gestartet werden."
 
 #. Type: note
 #. Description
 #: ../templates:2001
 msgid "Exim 4 needs additional configuration"
-msgstr "Exim 4 benötigt zusätzliche Konfiguration"
+msgstr "Exim 4 benÃ¶tigt zusÃ¤tzliche Konfiguration"
 
 #. Type: note
 #. Description
@@ -54,9 +54,9 @@ msgid ""
 "to talk to greylistd while receiving incoming mail; and depending on the "
 "response, issue a temporary rejection (451 SMTP code) to the remote host."
 msgstr ""
-"Damit das Greylisting effektiv wird, muss Ihr »Mail Transport Agent« (MTA) "
-"während des Empfangs eingehender E-Mail mit Greylistd sprechen; und abhängig "
-"von der Antwort eine vorübergehende Ablehnung (SMTP-Code 451) an den "
+"Damit das Greylisting effektiv wird, muss Ihr Â»Mail Transport AgentÂ« (MTA) "
+"wÃ¤hrend des Empfangs eingehender E-Mail mit Greylistd sprechen; und abhÃ¤ngig "
+"von der Antwort eine vorÃ¼bergehende Ablehnung (SMTP-Code 451) an den "
 "entfernten Rechner senden."
 
 #. Type: note
@@ -69,13 +69,13 @@ msgid ""
 "If you overwrite your Exim configuration files in the future (for instance, "
 "when upgrading Exim), you may need to re-run this command."
 msgstr ""
-"Da Sie Exim 4 als Ihren MTA verwenden, ist ein Skript für Sie vorhanden, "
-"dass diese Aufgabe erledigt. Tippen Sie an einer Eingabeaufforderung für "
+"Da Sie Exim 4 als Ihren MTA verwenden, ist ein Skript fÃ¼r Sie vorhanden, "
+"dass diese Aufgabe erledigt. Tippen Sie an einer Eingabeaufforderung fÃ¼r "
 "root folgendes ein:\n"
 " # greylistd-setup-exim4 add\n"
-"Falls Sie in der Zukunft Ihre Exim-Konfigurationsdateien überschreiben (zum "
-"Beispiel, wenn Sie ein Upgrade von Exim durchführen), müssen Sie eventuell "
-"diesen Befehl erneut ausführen."
+"Falls Sie in der Zukunft Ihre Exim-Konfigurationsdateien Ã¼berschreiben (zum "
+"Beispiel, wenn Sie ein Upgrade von Exim durchfÃ¼hren), mÃ¼ssen Sie eventuell "
+"diesen Befehl erneut ausfÃ¼hren."
 
 #. Type: note
 #. Description
@@ -84,8 +84,8 @@ msgid ""
 "Later, before you uninstall \"greylistd\", you want to run:\n"
 " # greylistd-setup-exim4 remove"
 msgstr ""
-"Später, bevor Sie »greylistd« deinstallieren, sollten Sie folgendes "
-"ausführen:\n"
+"SpÃ¤ter, bevor Sie Â»greylistdÂ« deinstallieren, sollten Sie folgendes "
+"ausfÃ¼hren:\n"
 " # greylistd-setup-exim4 remove"
 
 #. Type: note
@@ -96,9 +96,9 @@ msgid ""
 "or see the \"greylistd-setup-exim4(8)\" manual page.  One suggested option "
 "for the \"add\" command is \"-netmask=24\"."
 msgstr ""
-"Für weitere Optionen und Benutzungshilfe führen Sie den Befehl ohne "
-"Argumente aus oder lesen Sie die »greylistd-setup-exim4(8)«-Handbuchseite. "
-"Eine empfohlene Option für das »add«-Kommando ist »-netmask=24«."
+"FÃ¼r weitere Optionen und Benutzungshilfe fÃ¼hren Sie den Befehl ohne "
+"Argumente aus oder lesen Sie die Â»greylistd-setup-exim4(8)Â«-Handbuchseite. "
+"Eine empfohlene Option fÃ¼r das Â»addÂ«-Kommando ist Â»-netmask=24Â«."
 
 #. Type: note
 #. Description
@@ -108,10 +108,10 @@ msgid ""
 "configuration files are tagged as \"conffiles\", so per Debian Policy they "
 "are completely under your control.  Only you can change them."
 msgstr ""
-"Der Grund, dass diese Operation nicht automatisch durchgeführt wird ist der, "
-"dass Exims Konfigurationsdateien als »conffiles« markiert sind, so dass sie "
+"Der Grund, dass diese Operation nicht automatisch durchgefÃ¼hrt wird ist der, "
+"dass Exims Konfigurationsdateien als Â»conffilesÂ« markiert sind, so dass sie "
 "laut den Debian-Richtlinien komplett Ihrer Kontrolle unterliegen. Nur Sie "
-"können sie ändern."
+"kÃ¶nnen sie Ã¤ndern."
 
 #. Type: note
 #. Description
@@ -120,14 +120,14 @@ msgid ""
 "If you prefer to configure Exim 4 for greylistd by hand, please see /usr/"
 "share/doc/greylistd/README.Debian."
 msgstr ""
-"Falls Sie die Konfiguration von Exim 4 für Greylistd per Hand bevorzugen, "
+"Falls Sie die Konfiguration von Exim 4 fÃ¼r Greylistd per Hand bevorzugen, "
 "lesen Sie bitte /usr/share/doc/greylistd/README.Debian."
 
 #. Type: note
 #. Description
 #: ../templates:3001
 msgid "Your MTA needs additional configuration"
-msgstr "Ihr MTA benötigt zusätzliche Konfiguration"
+msgstr "Ihr MTA benÃ¶tigt zusÃ¤tzliche Konfiguration"
 
 #. Type: note
 #. Description
@@ -140,13 +140,13 @@ msgid ""
 " - The account under which your MTA runs needs to be added to the\n"
 "   \"greylist\" group.  After this, your MTA needs to be restarted."
 msgstr ""
-"Damit Greylisting effektiv wird, müssen zwei Dinge geschehen:\n"
-" - Ihr »Mail Transport Agent« (MTA) muss mit Greylistd während des\n"
-"   Empfangs von E-Mail sprechen, und abhängig von der Antwort eine\n"
-"   vorübergehende Ablehnung (SMTP-Antwort 451) an den entfernten\n"
+"Damit Greylisting effektiv wird, mÃ¼ssen zwei Dinge geschehen:\n"
+" - Ihr Â»Mail Transport AgentÂ« (MTA) muss mit Greylistd wÃ¤hrend des\n"
+"   Empfangs von E-Mail sprechen, und abhÃ¤ngig von der Antwort eine\n"
+"   vorÃ¼bergehende Ablehnung (SMTP-Antwort 451) an den entfernten\n"
 "   Rechner ausstellen.\n"
-" - Das Konto, unter dem Ihr MTA läuft, muss zu der »greylist«-Gruppe\n"
-"   hinzugefügt werden. Danach muss Ihr MTA neu gestartet werden."
+" - Das Konto, unter dem Ihr MTA lÃ¤uft, muss zu der Â»greylistÂ«-Gruppe\n"
+"   hinzugefÃ¼gt werden. Danach muss Ihr MTA neu gestartet werden."
 
 #. Type: note
 #. Description
@@ -157,7 +157,7 @@ msgid ""
 "the greylistd(8) manual page for some information on communicating with "
 "greylistd."
 msgstr ""
-"Unglücklicherweise unterstützt dieses Paket nur Debians Exim 4 "
+"UnglÃ¼cklicherweise unterstÃ¼tzt dieses Paket nur Debians Exim 4 "
 "Standardkonfiguration. Da es scheint, dass Sie einen anderen MTA verwenden, "
 "schauen Sie in die greylistd(8)-Handbuchseite, um einige Informationen zu "
 "der Kommunikation mit Greylistd zu erhalten."
@@ -170,6 +170,6 @@ msgid ""
 "better; see the \"Links\" section at:\n"
 "   http://projects.puremagic.com/greylisting/"
 msgstr ""
-"Es könnte auch andere Greylisting-Lösungen geben, die für Ihren MTA besser "
-"passen; lesen Sie den »Links«-Abschnitt auf:\n"
+"Es kÃ¶nnte auch andere Greylisting-LÃ¶sungen geben, die fÃ¼r Ihren MTA besser "
+"passen; lesen Sie den Â»LinksÂ«-Abschnitt auf:\n"
 "   http://projects.puremagic.com/greylisting/"

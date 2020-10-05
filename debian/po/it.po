@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: boolean
@@ -38,13 +38,13 @@ msgid ""
 msgstr ""
 "L'utente \"Debian-exim\" viene aggiunto al gruppo \"greylist\", in modo da "
 "consentire al demone Exim di comunicare con greylistd. Purtroppo, per "
-"rendere effettiva questa modifica, Ë necessario riavviare il processo."
+"rendere effettiva questa modifica, √® necessario riavviare il processo."
 
 #. Type: note
 #. Description
 #: ../templates:2001
 msgid "Exim 4 needs additional configuration"
-msgstr "» necessario modificare la configurazione di Exim 4"
+msgstr "√à necessario modificare la configurazione di Exim 4"
 
 #. Type: note
 #. Description
@@ -54,7 +54,7 @@ msgid ""
 "to talk to greylistd while receiving incoming mail; and depending on the "
 "response, issue a temporary rejection (451 SMTP code) to the remote host."
 msgstr ""
-"Per rendere efficace il greylisting Ë necessario che quando il proprio Mail "
+"Per rendere efficace il greylisting √® necessario che quando il proprio Mail "
 "Transport Agent (MTA) riceve un email possa comunicare con greylistd, e in "
 "base alla risposta, respingere temporaneamente il messaggio (risposta SMTP "
 "451) verso la macchine remota."
@@ -69,7 +69,7 @@ msgid ""
 "If you overwrite your Exim configuration files in the future (for instance, "
 "when upgrading Exim), you may need to re-run this command."
 msgstr ""
-"PoichÈ si utilizza Exim 4 come MTA, Ë disponibile uno script che effettua "
+"Poich√© si utilizza Exim 4 come MTA, √® disponibile uno script che effettua "
 "questa operazione. Da root eseguire:\n"
 " # greylistd-setup-exim4 add\n"
 "Se in futuro si sovrascrivono i file di configurazione di Exim (per esempio "
@@ -96,7 +96,7 @@ msgid ""
 msgstr ""
 "Per le altre opzioni e l'aiuto su come usarlo, eseguire il comando senza "
 "parametri oppure si veda la pagina man  di \"greylistd-setup-exim4(8)\". Una "
-"delle opzioni suggerite per il comando \"add\" Ë \"-netmask=24\"."
+"delle opzioni suggerite per il comando \"add\" √® \"-netmask=24\"."
 
 #. Type: note
 #. Description
@@ -106,10 +106,10 @@ msgid ""
 "configuration files are tagged as \"conffiles\", so per Debian Policy they "
 "are completely under your control.  Only you can change them."
 msgstr ""
-"La ragione per la quale questa operazione non Ë effettuata automaticamente Ë "
-"che il file di configurazione di Exim Ë marcato come un \"conffiles\" e "
-"quindi, in base alla policy Debian, Ë completamente sotto la responsabilit‡ "
-"dell'utente. Solo l'utente puÚ modificarlo."
+"La ragione per la quale questa operazione non √® effettuata automaticamente √® "
+"che il file di configurazione di Exim √® marcato come un \"conffiles\" e "
+"quindi, in base alla policy Debian, √® completamente sotto la responsabilit√† "
+"dell'utente. Solo l'utente pu√≤ modificarlo."
 
 #. Type: note
 #. Description
@@ -125,7 +125,7 @@ msgstr ""
 #. Description
 #: ../templates:3001
 msgid "Your MTA needs additional configuration"
-msgstr "» necessario modificare la configurazione del MTA"
+msgstr "√à necessario modificare la configurazione del MTA"
 
 #. Type: note
 #. Description
@@ -143,8 +143,8 @@ msgstr ""
 "   Agent (MTA) deve poter comunicare con greylistd e, in base alla\n"
 "   risposta, respingere temporaneamente il messaggio (risposta SMTP\n"
 "   451) verso la macchine remota.\n"
-" - L'account con il quale Ë in esecuzione l'MTA deve appartenere al\n"
-"   gruppo \"greylist\". Infine Ë necessario riavviare l'MTA."
+" - L'account con il quale √® in esecuzione l'MTA deve appartenere al\n"
+"   gruppo \"greylist\". Infine √® necessario riavviare l'MTA."
 
 #. Type: note
 #. Description
@@ -156,7 +156,7 @@ msgid ""
 "greylistd."
 msgstr ""
 "Sfortunatamente questo pacchetto supporta solo la configurazione di Exim 4, "
-"l'MTA predefinito in Debian. PoichÈ Ë in uso un MTA diverso si deve "
+"l'MTA predefinito in Debian. Poich√© √® in uso un MTA diverso si deve "
 "consultare la pagina man di greylistd(8) per ulteriori informazioni su come "
 "comunicare con greylistd."
 

@@ -21,22 +21,22 @@ msgstr ""
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=EUC-JP\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: boolean
 #. Description
 #: ../templates:1001
 msgid "Restart Exim after adding it to the greylist group?"
-msgstr "Exim ¤ò greylist ¥°¥ë¡¼¥×¤ËÄÉ²Ã¸å¡¢ºÆµ¯Æ°¤·¤Ş¤¹¤«?"
+msgstr "Exim ã‚’ greylist ã‚°ãƒ«ãƒ¼ãƒ—ã«è¿½åŠ å¾Œã€å†èµ·å‹•ã—ã¾ã™ã‹?"
 
 #. Type: boolean
 #. Description
 #: ../templates:1001
 msgid "You are using Exim 4 as your Mail Transport Agent (MTA).  Great!"
 msgstr ""
-"¥á¡¼¥ëÅ¾Á÷¥¨¡¼¥¸¥§¥ó¥È (MTA) ¤È¤·¤Æ Exim 4 ¤ò»È¤Ã¤Æ¤¤¤ë¤è¤¦¤Ç¤¹¤Í¡£ÁÇÀ²¤é¤·"
-"¤¤!"
+"ãƒ¡ãƒ¼ãƒ«è»¢é€ã‚¨ãƒ¼ã‚¸ã‚§ãƒ³ãƒˆ (MTA) ã¨ã—ã¦ Exim 4 ã‚’ä½¿ã£ã¦ã„ã‚‹ã‚ˆã†ã§ã™ã­ã€‚ç´ æ™´ã‚‰ã—"
+"ã„!"
 
 #. Type: boolean
 #. Description
@@ -46,15 +46,15 @@ msgid ""
 "the Exim daemon process can talk to greylistd.  However, for this change to "
 "take effect, the process must also be restarted."
 msgstr ""
-"\"Debian-exim\" ¥æ¡¼¥¶¤¬ \"greylist\" ¥°¥ë¡¼¥×¤ËÄÉ²Ã¤µ¤ì¤ë¤Î¤Ç¡¢Exim ¥Ç¡¼¥â¥ó"
-"¥×¥í¥»¥¹¤Ï greylistd ¤ÈÄÌ¿®¤¬¤Ç¤­¤Ş¤¹¡£¤·¤«¤·¡¢¤³¤ÎÊÑ¹¹¤òÍ­¸ú¤Ë¤¹¤ë¤Ë¤Ï¥×¥í¥»"
-"¥¹¤òºÆµ¯Æ°¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Ş¤¹¡£"
+"\"Debian-exim\" ãƒ¦ãƒ¼ã‚¶ãŒ \"greylist\" ã‚°ãƒ«ãƒ¼ãƒ—ã«è¿½åŠ ã•ã‚Œã‚‹ã®ã§ã€Exim ãƒ‡ãƒ¼ãƒ¢ãƒ³"
+"ãƒ—ãƒ­ã‚»ã‚¹ã¯ greylistd ã¨é€šä¿¡ãŒã§ãã¾ã™ã€‚ã—ã‹ã—ã€ã“ã®å¤‰æ›´ã‚’æœ‰åŠ¹ã«ã™ã‚‹ã«ã¯ãƒ—ãƒ­ã‚»"
+"ã‚¹ã‚’å†èµ·å‹•ã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚"
 
 #. Type: note
 #. Description
 #: ../templates:2001
 msgid "Exim 4 needs additional configuration"
-msgstr "Exim 4 ¤Ë¤ÏÄÉ²ÃÀßÄê¤¬É¬Í×¤Ç¤¹"
+msgstr "Exim 4 ã«ã¯è¿½åŠ è¨­å®šãŒå¿…è¦ã§ã™"
 
 #. Type: note
 #. Description
@@ -64,10 +64,10 @@ msgid ""
 "to talk to greylistd while receiving incoming mail; and depending on the "
 "response, issue a temporary rejection (451 SMTP code) to the remote host."
 msgstr ""
-"greylisting ¤òÍ­¸ú¤Ë¤¹¤ë¤Ë¤Ï¡¢¥á¡¼¥ëÅ¾Á÷¥¨¡¼¥¸¥§¥ó¥È (MTA) ¤¬¤ä¤Ã¤Æ¤­¤¿¥á¡¼¥ë"
-"¤ò¼õ¤±¼è¤Ã¤Æ¤¤¤ë´Ö¤Ë greylistd ¤ÈÄÌ¿®¤¹¤ëÉ¬Í×¤¬¤¢¤ê¡¢²Ã¤¨¤Æ±şÅú¤Ë°ÍÂ¸¤·¤Æ¤¤¤ë"
-"¤Î¤Ç¡¢¥ê¥â¡¼¥È¥Û¥¹¥È¤Ø¤Ï°ì»şÅª¤ÊµñÈİ (451 SMTP ¥³¡¼¥É) ¤òÊÖ¤¹¤è¤¦¤Ë¤·¤Ê¤±¤ì¤Ğ"
-"¤¤¤±¤Ş¤»¤ó¡£"
+"greylisting ã‚’æœ‰åŠ¹ã«ã™ã‚‹ã«ã¯ã€ãƒ¡ãƒ¼ãƒ«è»¢é€ã‚¨ãƒ¼ã‚¸ã‚§ãƒ³ãƒˆ (MTA) ãŒã‚„ã£ã¦ããŸãƒ¡ãƒ¼ãƒ«"
+"ã‚’å—ã‘å–ã£ã¦ã„ã‚‹é–“ã« greylistd ã¨é€šä¿¡ã™ã‚‹å¿…è¦ãŒã‚ã‚Šã€åŠ ãˆã¦å¿œç­”ã«ä¾å­˜ã—ã¦ã„ã‚‹"
+"ã®ã§ã€ãƒªãƒ¢ãƒ¼ãƒˆãƒ›ã‚¹ãƒˆã¸ã¯ä¸€æ™‚çš„ãªæ‹’å¦ (451 SMTP ã‚³ãƒ¼ãƒ‰) ã‚’è¿”ã™ã‚ˆã†ã«ã—ãªã‘ã‚Œã°"
+"ã„ã‘ã¾ã›ã‚“ã€‚"
 
 #. Type: note
 #. Description
@@ -79,11 +79,11 @@ msgid ""
 "If you overwrite your Exim configuration files in the future (for instance, "
 "when upgrading Exim), you may need to re-run this command."
 msgstr ""
-"MTA ¤È¤·¤Æ Exim 4 ¤òÍøÍÑ¤·¤Æ¤¤¤ë¤Î¤Ç¡¢¤³¤Îºî¶È¤ò¼Â¹Ô¤¹¤ë¥¹¥¯¥ê¥×¥È¤¬ÍøÍÑ²ÄÇ½"
-"¤Ç¤¹¡£root ¤Î¥×¥í¥ó¥×¥È¤Ç¡¢°Ê²¼¤Î¤è¤¦¤ËÆşÎÏ¤·¤Æ¤¯¤À¤µ¤¤:\n"
+"MTA ã¨ã—ã¦ Exim 4 ã‚’åˆ©ç”¨ã—ã¦ã„ã‚‹ã®ã§ã€ã“ã®ä½œæ¥­ã‚’å®Ÿè¡Œã™ã‚‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒåˆ©ç”¨å¯èƒ½"
+"ã§ã™ã€‚root ã®ãƒ—ãƒ­ãƒ³ãƒ—ãƒˆã§ã€ä»¥ä¸‹ã®ã‚ˆã†ã«å…¥åŠ›ã—ã¦ãã ã•ã„:\n"
 " # greylistd-setup-exim4 add\n"
-"º£¸å Exim ¤ÎÀßÄê¥Õ¥¡¥¤¥ë¤ò¾å½ñ¤­¤¹¤ë¾ì¹ç (Îã¤¨¤Ğ Exim ¤ò¥¢¥Ã¥×¥°¥ì¡¼¥É¤¹¤ëºİ"
-"¤Ê¤É)¡¢¤³¤Î¥³¥Ş¥ó¥É¤òºÆ¼Â¹Ô¤¹¤ëÉ¬Í×¤¬¤¢¤ë¤Ç¤·¤ç¤¦¡£"
+"ä»Šå¾Œ Exim ã®è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä¸Šæ›¸ãã™ã‚‹å ´åˆ (ä¾‹ãˆã° Exim ã‚’ã‚¢ãƒƒãƒ—ã‚°ãƒ¬ãƒ¼ãƒ‰ã™ã‚‹éš›"
+"ãªã©)ã€ã“ã®ã‚³ãƒãƒ³ãƒ‰ã‚’å†å®Ÿè¡Œã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã§ã—ã‚‡ã†ã€‚"
 
 #. Type: note
 #. Description
@@ -92,7 +92,7 @@ msgid ""
 "Later, before you uninstall \"greylistd\", you want to run:\n"
 " # greylistd-setup-exim4 remove"
 msgstr ""
-"¤½¤ÎÂ¾¡¢\"greylistd\" ¤ò¥¢¥ó¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ëÁ°¤Ë¤Ï°Ê²¼¤ò¼Â¹Ô¤·¤Æ¤¯¤À¤µ¤¤:\n"
+"ãã®ä»–ã€\"greylistd\" ã‚’ã‚¢ãƒ³ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹å‰ã«ã¯ä»¥ä¸‹ã‚’å®Ÿè¡Œã—ã¦ãã ã•ã„:\n"
 " # greylistd-setup-exim4 remove"
 
 #. Type: note
@@ -103,9 +103,9 @@ msgid ""
 "or see the \"greylistd-setup-exim4(8)\" manual page.  One suggested option "
 "for the \"add\" command is \"-netmask=24\"."
 msgstr ""
-"»È¤¤Êı¤Ë¤Ä¤¤¤Æ¤Î¤µ¤é¤Ê¤ë¥ª¥×¥·¥ç¥ó¤È¥Ø¥ë¥×¤Ï¡¢°ú¿ô¤Ê¤·¤Ç¥³¥Ş¥ó¥É¤ò¼Â¹Ô¤¹¤ë"
-"¤«¡¢\"greylistd-setup-exim4(8)\" ¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤ò»²¾È¤·¤Æ¤¯¤À¤µ¤¤¡£\"add\" "
-"¥³¥Ş¥ó¥É¤Ø¤Î¤ª´«¤á¤Î¥ª¥×¥·¥ç¥ó¤Î°ì¤Ä¤Ï \"-netmask=24\" ¤Ç¤¹¡£"
+"ä½¿ã„æ–¹ã«ã¤ã„ã¦ã®ã•ã‚‰ãªã‚‹ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¨ãƒ˜ãƒ«ãƒ—ã¯ã€å¼•æ•°ãªã—ã§ã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œã™ã‚‹"
+"ã‹ã€\"greylistd-setup-exim4(8)\" ãƒãƒ‹ãƒ¥ã‚¢ãƒ«ãƒšãƒ¼ã‚¸ã‚’å‚ç…§ã—ã¦ãã ã•ã„ã€‚\"add\" "
+"ã‚³ãƒãƒ³ãƒ‰ã¸ã®ãŠå‹§ã‚ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®ä¸€ã¤ã¯ \"-netmask=24\" ã§ã™ã€‚"
 
 #. Type: note
 #. Description
@@ -115,9 +115,9 @@ msgid ""
 "configuration files are tagged as \"conffiles\", so per Debian Policy they "
 "are completely under your control.  Only you can change them."
 msgstr ""
-"¤³¤ÎÆ°ºî¤¬°ÜÆ°Åª¤Ë¤Ï¼Â¹Ô¤µ¤ì¤Ê¤¤ÍıÍ³¤Ï¡¢Exim ¤ÎÀßÄê¥Õ¥¡¥¤¥ë¤Ï \"conffiles\" "
-"¤È¤µ¤ì¤Æ¤ª¤ê¡¢Debian ¥İ¥ê¥·¡¼¤Ë¤è¤ì¤ĞÁ´¤Æ¥æ¡¼¥¶¤¬´ÉÍı¤¹¤ë¤â¤Î¤È¤µ¤ì¤Æ¤¤¤Ş¤¹¡£"
-"¤¢¤Ê¤¿¤À¤±¤¬ÊÑ¹¹¤Ç¤­¤ë¤Î¤Ç¤¹¡£"
+"ã“ã®å‹•ä½œãŒç§»å‹•çš„ã«ã¯å®Ÿè¡Œã•ã‚Œãªã„ç†ç”±ã¯ã€Exim ã®è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã¯ \"conffiles\" "
+"ã¨ã•ã‚Œã¦ãŠã‚Šã€Debian ãƒãƒªã‚·ãƒ¼ã«ã‚ˆã‚Œã°å…¨ã¦ãƒ¦ãƒ¼ã‚¶ãŒç®¡ç†ã™ã‚‹ã‚‚ã®ã¨ã•ã‚Œã¦ã„ã¾ã™ã€‚"
+"ã‚ãªãŸã ã‘ãŒå¤‰æ›´ã§ãã‚‹ã®ã§ã™ã€‚"
 
 #. Type: note
 #. Description
@@ -126,14 +126,14 @@ msgid ""
 "If you prefer to configure Exim 4 for greylistd by hand, please see /usr/"
 "share/doc/greylistd/README.Debian."
 msgstr ""
-"Exim 4 ¤ò ¼êÆ°¤Ç greylistd ¸ş¤±¤ËÀßÄê¤·¤¿¤¤¾ì¹ç¤Ë¤Ï¡¢/usr/share/doc/"
-"greylistd/README.Debian ¤ò»²¾È¤·¤Æ¤¯¤À¤µ¤¤¡£"
+"Exim 4 ã‚’ æ‰‹å‹•ã§ greylistd å‘ã‘ã«è¨­å®šã—ãŸã„å ´åˆã«ã¯ã€/usr/share/doc/"
+"greylistd/README.Debian ã‚’å‚ç…§ã—ã¦ãã ã•ã„ã€‚"
 
 #. Type: note
 #. Description
 #: ../templates:3001
 msgid "Your MTA needs additional configuration"
-msgstr "MTA ¤Ë¤ÏÄÉ²ÃÀßÄê¤¬É¬Í×¤Ç¤¹"
+msgstr "MTA ã«ã¯è¿½åŠ è¨­å®šãŒå¿…è¦ã§ã™"
 
 #. Type: note
 #. Description
@@ -146,12 +146,12 @@ msgid ""
 " - The account under which your MTA runs needs to be added to the\n"
 "   \"greylist\" group.  After this, your MTA needs to be restarted."
 msgstr ""
-"greylisting ¤òÍ­¸ú¤Ë¤¹¤ë¤Ë¤Ï¡¢2 ¤Ä¤Î»öÊÁ¤¬Á°Äó¤Ç¤¹:\n"
-" - ¥á¡¼¥ëÅ¾Á÷¥¨¡¼¥¸¥§¥ó¥È (MTA) ¤¬¼õ¿®¥á¡¼¥ë¤ò¼õ¤±¼è¤Ã¤Æ¤¤¤ë´Ö¡¢greylistd\n"
-"   ¤ÈÄÌ¿®¤¹¤ëÉ¬Í×¤¬¤¢¤ê¡¢²Ã¤¨¤Æ±şÅú¤Ë°ÍÂ¸¤·¤Æ¤¤¤ë¤Î¤Ç¡¢¥ê¥â¡¼¥È¥Û¥¹¥È¤Ø¤Ï\n"
-"   °ì»şÅª¤ÊµñÈİ (451 SMTP ¥³¡¼¥É) ¤òÊÖ¤¹¤è¤¦¤Ë¤·¤Ê¤±¤ì¤Ğ¤¤¤±¤Ê¤¤¡£\n"
-" - MTA ¤òÆ°ºî¤µ¤»¤Æ¤¤¤ë¥¢¥«¥¦¥ó¥È¤Ï \"greylist\" ¥°¥ë¡¼¥×¤ËÄÉ²Ã¤µ¤ì¤Ê¤±¤ì¤Ğ\n"
-"   ¤¤¤±¤Ê¤¤¡£¤³¤ÎÀßÄê¸å¡¢MTA ¤ÏºÆµ¯Æ°¤¬É¬Í×¡£"
+"greylisting ã‚’æœ‰åŠ¹ã«ã™ã‚‹ã«ã¯ã€2 ã¤ã®äº‹æŸ„ãŒå‰æã§ã™:\n"
+" - ãƒ¡ãƒ¼ãƒ«è»¢é€ã‚¨ãƒ¼ã‚¸ã‚§ãƒ³ãƒˆ (MTA) ãŒå—ä¿¡ãƒ¡ãƒ¼ãƒ«ã‚’å—ã‘å–ã£ã¦ã„ã‚‹é–“ã€greylistd\n"
+"   ã¨é€šä¿¡ã™ã‚‹å¿…è¦ãŒã‚ã‚Šã€åŠ ãˆã¦å¿œç­”ã«ä¾å­˜ã—ã¦ã„ã‚‹ã®ã§ã€ãƒªãƒ¢ãƒ¼ãƒˆãƒ›ã‚¹ãƒˆã¸ã¯\n"
+"   ä¸€æ™‚çš„ãªæ‹’å¦ (451 SMTP ã‚³ãƒ¼ãƒ‰) ã‚’è¿”ã™ã‚ˆã†ã«ã—ãªã‘ã‚Œã°ã„ã‘ãªã„ã€‚\n"
+" - MTA ã‚’å‹•ä½œã•ã›ã¦ã„ã‚‹ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã¯ \"greylist\" ã‚°ãƒ«ãƒ¼ãƒ—ã«è¿½åŠ ã•ã‚Œãªã‘ã‚Œã°\n"
+"   ã„ã‘ãªã„ã€‚ã“ã®è¨­å®šå¾Œã€MTA ã¯å†èµ·å‹•ãŒå¿…è¦ã€‚"
 
 #. Type: note
 #. Description
@@ -162,9 +162,9 @@ msgid ""
 "the greylistd(8) manual page for some information on communicating with "
 "greylistd."
 msgstr ""
-"»ÄÇ°¤Ê¤³¤È¤Ë¡¢¤³¤Î¥Ñ¥Ã¥±¡¼¥¸¤Ç¤Ï Debian ¤ÎÉ¸½à Exim 4 ¤ËÂĞ¤¹¤ëÀßÄê¤Î¤ß¤ò¥µ"
-"¥İ¡¼¥È¤·¤Æ¤¤¤Ş¤¹¡£Â¾¤Î MTA ¤ò»È¤Ã¤Æ¤¤¤ë¤è¤¦¤Ç¤¹¤Î¤Ç¡¢greylistd ¤ÈÄÌ¿®¤¹¤ë¤¿¤á"
-"¤Î¾ğÊó¤Ë¤Ä¤¤¤Æ¤Ï greylistd(8) ¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤ò»²¾È¤·¤Æ²¼¤µ¤¤¡£"
+"æ®‹å¿µãªã“ã¨ã«ã€ã“ã®ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã§ã¯ Debian ã®æ¨™æº– Exim 4 ã«å¯¾ã™ã‚‹è¨­å®šã®ã¿ã‚’ã‚µ"
+"ãƒãƒ¼ãƒˆã—ã¦ã„ã¾ã™ã€‚ä»–ã® MTA ã‚’ä½¿ã£ã¦ã„ã‚‹ã‚ˆã†ã§ã™ã®ã§ã€greylistd ã¨é€šä¿¡ã™ã‚‹ãŸã‚"
+"ã®æƒ…å ±ã«ã¤ã„ã¦ã¯ greylistd(8) ãƒãƒ‹ãƒ¥ã‚¢ãƒ«ãƒšãƒ¼ã‚¸ã‚’å‚ç…§ã—ã¦ä¸‹ã•ã„ã€‚"
 
 #. Type: note
 #. Description
@@ -174,6 +174,6 @@ msgid ""
 "better; see the \"Links\" section at:\n"
 "   http://projects.puremagic.com/greylisting/"
 msgstr ""
-"¤¢¤Ê¤¿¤Î»È¤Ã¤Æ¤¤¤ë MTA ¤Ë¤è¤êÅ¬¤·¤Æ¤¤¤ë¡¢ÍøÍÑ²ÄÇ½¤ÊÂ¾¤Î greylisting ¥½¥ê¥å¡¼"
-"¥·¥ç¥ó¤¬¤¢¤ë¤«¤â¤·¤ì¤Ş¤»¤ó¡£°Ê²¼¤Î \"Links\" ¥»¥¯¥·¥ç¥ó¤ò»²¾È¤·¤Æ¤¯¤À¤µ¤¤:\n"
+"ã‚ãªãŸã®ä½¿ã£ã¦ã„ã‚‹ MTA ã«ã‚ˆã‚Šé©ã—ã¦ã„ã‚‹ã€åˆ©ç”¨å¯èƒ½ãªä»–ã® greylisting ã‚½ãƒªãƒ¥ãƒ¼"
+"ã‚·ãƒ§ãƒ³ãŒã‚ã‚‹ã‹ã‚‚ã—ã‚Œã¾ã›ã‚“ã€‚ä»¥ä¸‹ã® \"Links\" ã‚»ã‚¯ã‚·ãƒ§ãƒ³ã‚’å‚ç…§ã—ã¦ãã ã•ã„:\n"
 "   http://projects.puremagic.com/greylisting/"
