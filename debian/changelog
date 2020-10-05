@@ -1,3 +1,15 @@
+greylistd (0.8.8.8+nmu1) unstable; urgency=medium
+
+  * Non-maintainer upload
+  * With many thanks to Benedikt Spranger <b.spranger@linutronix.de>
+    for work at https://github.com/eurovibes/greylistd.git to convert to
+    python3 and fix PEP-8 issues (Closes: #948706)
+  * This also fixes the exim configuration file remove procedure (Closes:
+    #321025); it might also close #872734
+  * Fix lintian warnings about non-UTF-8 translation files
+
+ -- Julian Gilbey <jdg@debian.org>  Mon, 05 Oct 2020 19:33:07 +0100
+
 greylistd (0.8.8.8) unstable; urgency=medium
 
   * apply patch for python3 (Closes: #943050)

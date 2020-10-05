@@ -135,7 +135,7 @@ def duration(secs):
         return "%d second%s" % (secs, plural[secs > 1])
 
     elif secs < 60 * 60:
-        (mins, secs) = (secs / 60, secs % 60)
+        (mins, secs) = (secs // 60, secs % 60)
         return "%s%s%s%s%s%s%s" % (mins, " minute", plural[mins != 1],
                                    secs and " and " or "",
                                    secs or "",
@@ -143,7 +143,7 @@ def duration(secs):
                                    plural[secs > 1] or "")
 
     elif (secs + 30) < 60 * 60 * 24:
-        (hrs, mins) = ((secs + 30) / 3600, ((secs + 30) / 60) % 60)
+        (hrs, mins) = ((secs + 30) // 3600, ((secs + 30) // 60) % 60)
         return "%s%s%s%s%s%s%s" % (hrs, " hour", plural[hrs != 1],
                                    mins and " and " or "",
                                    mins or "",
@@ -151,7 +151,7 @@ def duration(secs):
                                    plural[mins > 1] or "")
 
     else:
-        (days, hrs) = ((secs + 1800) / 86400, ((secs + 1800) / 3600) % 24)
+        (days, hrs) = ((secs + 1800) // 86400, ((secs + 1800) // 3600) % 24)
         return "%s%s%s%s%s%s%s" % (days, " day", plural[days != 1],
                                    hrs and " and " or "",
                                    hrs or "",
@@ -484,7 +484,7 @@ def do_check(options, args, update=False):
         do_add([state], key)
 
     if truthtest:
-        return (state == truthtest) and "true" or "false"
+        return "true" if state == truthtest else "false"
     else:
         return state
 
@@ -634,8 +634,8 @@ def runCommand(line, client):
     else:
         function = do_update
 
-    args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = getfullargspec(
-        function)
+    (args, varargs, varkw, defaults,
+     kwonlyargs, kwonlydefaults, annotations) = getfullargspec(function)
 
     while words and words[0].startswith("-"):
         options.append(words.pop(0).lstrip("-"))
@@ -655,7 +655,7 @@ def runCommand(line, client):
 
         elif arg == "args":
             useargs = True
-            arglist.append(str(words))
+            arglist.append(words)
 
         elif arg == "socket":
             arglist.append(client)
@@ -671,7 +671,7 @@ def runCommand(line, client):
             raise CommandError("Too many arguments")
 
         if key and config[DATA][TRIPLETFILE] and config[DATA][SAVETRIPLETS]:
-            newTriplets[key] = " ".join(words).lower()
+            newTriplets[key] = " ".join(words)
 
         return function(*tuple(arglist)) or ""
 
