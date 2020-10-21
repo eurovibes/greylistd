@@ -35,9 +35,11 @@ def usage(progname, message=None):
     if message:
         out = stderr
         out.write("%s: %s\n\n" % (progname, message))
+        exitstatus = 1
     else:
         out = stdout
         out.write("Command line interface to \"greylistd(8)\"\n\n")
+        exitstatus = 0
 
     out.write("\n".join([
         "Usage: %s --help" % progname,
@@ -82,7 +84,7 @@ def usage(progname, message=None):
         "",
         ""]))
 
-    exit((-1, 0)[not message])
+    exit(exitstatus)
 
 
 progname = argv[0].split("/")[-1]
@@ -114,13 +116,13 @@ try:
     sock.connect(sockfile)
 except Exception as e:
     stderr.write("%s: %s\n" % (sockfile, str(e)))
-    exit(-1)
+    exit(1)
 
 try:
     sock.send(" ".join(argv[1:]).encode('ascii', 'replace'))
 except Exception as e:
     stderr.write("%s: %s\n" % (sockfile, str(e)))
-    exit(-1)
+    exit(1)
 
 
 stat = True
@@ -149,4 +151,4 @@ if firstword:
     exit(exitcodes.get(firstword, 0))
 else:
     stderr.write("(No response from greylistd)\n")
-    exit(-1)
+    exit(1)

@@ -739,12 +739,12 @@ def startup():
     except SocketError as e:
         log("Could not bind/listen to socket %s: %s" %
             (config[SOCKET][SOCKPATH], str(e)))
-        exit(-1)
+        exit(1)
 
     except RunException as e:
         log(str(e))
         cleanup(False)
-        exit(-1)
+        exit(1)
 
     sockets = [listener]
 
