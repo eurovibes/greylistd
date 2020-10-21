@@ -12,7 +12,7 @@ from re import compile
 
 # Ensure that we can run this program
 if version < "3.6":
-    stderr.write("This program requires Python 3.0 or newer\n")
+    stderr.write("This program requires Python 3.6 or newer\n")
     exit(1)
 
 
@@ -322,6 +322,9 @@ def exim4_default_setup(description, function, options, doupdate):
 def usage(progname, message=None):
     if message:
         stderr.write("%s: %s\n" % (progname, message))
+        exitstatus = 1
+    else:
+        exitstatus = 0
 
     stderr.write("\n".join([
         "Usage: %s {add|remove|test} [options] [<file> <acl_name>]" % progname,
@@ -352,7 +355,7 @@ def usage(progname, message=None):
         "      has to be present for the 'add' command",
         ""]))
 
-    exit((-1, 0)[message == None])
+    exit(exitstatus)
 
 
 progname = None
@@ -415,9 +418,8 @@ elif filename:
 else:
     ok = exim4_default_setup(description, function, options, doupdate)
 
+if not ok:
+    exit(1)
 
-if ok and doupdate and not ("no-reload" in options):
+if doupdate and not ("no-reload" in options):
     run("/usr/sbin/invoke-rc.d", "exim4", "reload")
-
-
-exit((0, -1)[not ok])
