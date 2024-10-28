@@ -716,7 +716,7 @@ def createSocket(path, owner, mode):
             "Specified socket mode '%s' is not a valid octal number" % mode)
     except OSError as e:
         raise RunException(
-            "Could not set mode 0%o on socket %s: %s" % (mode, path, str(e)))
+            "Could not set mode 0%o on socket %s: %s" % (int(mode, 8), path, str(e)))
 
     sock.listen(5)
     return sock
